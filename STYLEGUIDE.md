@@ -2,6 +2,16 @@
 
 Gesammelte Regeln und Beobachtungen aus den Referenzen und dem Feedback zu den bisherigen Filmen.
 Gilt für **alle zukünftigen Projekte** in diesem Repo, sofern das Briefing nichts anderes sagt.
+Vor jedem neuen Film / jeder neuen Szene diese Datei lesen und befolgen.
+
+## Kurzfassung
+
+- Keine kontextgebenden Stichpunkte/Labels in den Bildecken (keine Kapitelnummern, Eck-Labels, Fadenkreuze, Rahmenmarken).
+- Analog-/CRT-Look höchstens als Hauch (`scripts/analog.mjs --strength 0.12`).
+- Typografie nach der Typo-Referenz: wortweise auf Beat/Achtel, Schriftmischung (fette enge Grotesk ↔ kursive Serif),
+  Objekte/UI als Glyphen, permanente Mikro-Bewegung, harte Schnitte statt Fades (→ §1).
+- Avatare/Figuren reagieren auf das Gesagte; pro Satz mindestens ein Wort mit Bedeutungsgeste (→ §2.2–2.3).
+- Sounds nie aus nur einem Sample wiederholen: je Geräusch 4–6 Varianten, max. 3× dasselbe Sample pro 10 s (→ §4).
 
 ---
 
