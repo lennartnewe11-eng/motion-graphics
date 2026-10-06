@@ -72,20 +72,39 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
     vComp.threshold.value = -22; vComp.ratio.value = 3; vComp.attack.value = 0.005; vComp.release.value = 0.12;
     vIn.connect(vHp); vHp.connect(vPres); vPres.connect(vComp); vComp.connect(master);
     const vRev = ac.createGain(); vRev.gain.value = 0.06; vComp.connect(vRev); vRev.connect(revIn);
-    const bufs = await Promise.all(voice.map(async (v) => ac.decodeAudioData(await (await fetch(v.url)).arrayBuffer())));
+    const decoded = new Map();
+    for (const u of new Set(voice.map((v) => v.url))) decoded.set(u, await ac.decodeAudioData(await (await fetch(u)).arrayBuffer()));
+    const bufs = voice.map((v) => decoded.get(v.url));
     voice.forEach((v, i) => {
       const src = ac.createBufferSource();
       src.buffer = bufs[i];
-      src.connect(vIn);
+      // short fades so slices cut from one take never click
+      const fg = ac.createGain();
+      src.connect(fg); fg.connect(vIn);
       // optional sub-range of the take (offset/dur) so a film can open a pause inside a line
       const off = v.offset || 0, len = v.dur ?? bufs[i].duration - off;
-      src.start(v.t, off, len);
+      src.start(Math.max(0, v.t), off, len);
       const end = v.t + len;
-      for (const [g, depth] of [[vduck.gain, 0.25], [dDuck.gain, 0.5], [sDuck.gain, sfxDuck]]) {
-        g.setTargetAtTime(depth, v.t - 0.1, 0.05);
-        g.setTargetAtTime(1, end + 0.05, 0.25);
+      if (v.offset !== undefined) {
+        fg.gain.setValueAtTime(0, Math.max(0, v.t));
+        fg.gain.linearRampToValueAtTime(1, Math.max(0, v.t) + 0.005);
+        fg.gain.setValueAtTime(1, Math.max(0, end - 0.006));
+        fg.gain.linearRampToValueAtTime(0, end);
       }
     });
+    // duck the rest of the mix under the voice: merge segments into continuous speech spans first,
+    // so the release of one slice can never cancel the duck of the next
+    const spans = [];
+    for (const v of voice.map((v, i) => ({ a: Math.max(0, v.t), b: Math.max(0, v.t) + (v.dur ?? bufs[i].duration - (v.offset || 0)) })).sort((x, y) => x.a - y.a)) {
+      const last = spans[spans.length - 1];
+      if (last && v.a - last.b < 0.35) last.b = Math.max(last.b, v.b); else spans.push({ ...v });
+    }
+    for (const { a, b } of spans) {
+      for (const [g, depth] of [[vduck.gain, 0.25], [dDuck.gain, 0.5], [sDuck.gain, sfxDuck]]) {
+        g.setTargetAtTime(depth, Math.max(0, a - 0.1), 0.05);
+        g.setTargetAtTime(1, b + 0.05, 0.25);
+      }
+    }
   }
   // stem solo for mix analysis (reverb/delay returns stay on)
   if (solo) for (const [k, g] of [['drums', drums], ['music', musicIn], ['sfx', sfx]]) if (k !== solo) g.gain.value = 0;

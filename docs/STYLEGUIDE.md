@@ -410,12 +410,21 @@ Referenz 1 (Senioren-Collage) als Material, aber **in Bewegung wie ein Film**. T
 - Handschrift als zweite Stimme für Kontext („das Original“, „North End, 15.01.1919“, „gebaut 1915“, „echt jetzt?“).
 
 ### 8.2 Sound
-- Voice-over: ElevenLabs `eleven_multilingual_v2`, Stimme **Daniel – German Narrator** (`2GbzpA60AS7Sdvj7zrZh`),
-  speed 1.12, `previous_text/next_text` für durchgehende Intonation, **Zahlen ausgeschrieben**.
+- Voice-over: ElevenLabs `eleven_multilingual_v2`, Stimme **Christian Plasa – Dynamic and Vibrant**
+  (`nsFsExJHz4xV1sOX6Kdn`, für Shorts/Reels gemacht), stability 0.35 · style 0.45 · speed 1.2, **Zahlen ausgeschrieben**.
+- **Eine durchgehende Aufnahme** (`ONE_TAKE`), nie Zeile für Zeile: Einzelzeilen klingen abgehackt, weil jede ihre eigene
+  Satzmelodie bekommt (Feedback zur ersten Fassung). Die Zeilen werden über die Wort-Zeitstempel zurückgewonnen.
+- **Atempausen schneiden wie ein Cutter** (`timeline.js`): Pausen im Satz ≤ 0,26 s, zwischen Zeilen ≤ 0,30 s; gesetzte
+  Kunstpausen bleiben (Hook: „Und sie bestand aus … Sirup.“) und dramaturgische Stille wird gezielt addiert
+  (vor der Explosion, vor dem letzten Wort). Schnitte nur in der Stille, je 5 ms Blende.
+- `eleven_v3` ist ausdrucksstärker, ignoriert aber Tempo (Parameter und Tags) — für Shorts zu langsam (≈ 30 % länger).
+- **Keine Musik unter dem Hook:** die ersten Sekunden gehören Bild, Stimme und Geräusch der Welt; der Score setzt mit der
+  Geschichte ein (bei Melasse auf „Boston“).
 - Foley: ElevenLabs Sound Effects, **Mehrfach-Takes** („ten separate … silence between“) → `scripts/slice.py` schneidet
   automatisch in Varianten (Hysterese-Gate, Onset-Fallback). Round-Robin + Pitch/Level/Pan-Streuung in `lib/sound.js`.
 - **Mix-Messung statt Gefühl:** Stems (`--solo voice|sfx|music|drums`) und Pegel pro Szene **im Sprachband 300 Hz–4 kHz**.
   Ziel: Stimme ≥ 4–6 dB über SFX. Breitbandiges Getöse (Welle) tiefpassen (≈ 900 Hz) — es bleibt schwer, maskiert aber nicht.
   Dichte Tick-Ketten (Zähler) sind Sprach-Maskierer → leise.
-- SFX-Bus duckt unter der Stimme (−6 dB), Musik −12 dB, Drums −6 dB.
+- SFX-Bus duckt unter der Stimme (−6 dB), Musik −12 dB, Drums −6 dB — **pro zusammenhängender Sprechphase**
+  (Segmente < 0,35 s Abstand zusammenfassen), sonst hebt das Release eines Segments das Ducking des nächsten auf.
 - **Stille als Ereignis:** vor der Explosion 2 Beats nur Herzschlag; vor „süß“ eine echte Pause.

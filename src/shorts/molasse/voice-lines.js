@@ -1,12 +1,15 @@
 // Narration for "Die Melasse-Flut" (Boston, 15. Januar 1919).
 // `text` is what ElevenLabs speaks (numbers spelled out); the scenes map word indices to on-screen typography.
 // Start times are not fixed here: timeline.js places every line on the beat grid from the generated durations.
-export const VOICE_ID = '2GbzpA60AS7Sdvj7zrZh'; // "Daniel – German Narrator" (ElevenLabs Voice Library)
+// One continuous take (ONE_TAKE): the whole script is read in one go so breath and melody flow;
+// scripts/voice.mjs splits it into lines by the word alignment.
+export const VOICE_ID = 'nsFsExJHz4xV1sOX6Kdn'; // "Christian Plasa – Dynamic and Vibrant" (ElevenLabs Voice Library, made for Shorts/Reels)
 export const MODEL = 'eleven_multilingual_v2';
-export const SETTINGS = { stability: 0.42, similarity_boost: 0.8, style: 0.32, use_speaker_boost: true, speed: 1.12 };
+export const ONE_TAKE = true;
+export const SETTINGS = { stability: 0.35, similarity_boost: 0.8, style: 0.45, use_speaker_boost: true, speed: 1.2 };
 export const LINES = [
   { id: 'm01', text: 'Diese Welle hat einundzwanzig Menschen getötet.' },
-  { id: 'm02', text: 'Und sie bestand aus Sirup.' },
+  { id: 'm02', text: 'Und sie bestand aus … Sirup.' },
   { id: 'm03', text: 'Boston. Fünfzehnter Januar neunzehnhundertneunzehn. Kurz nach Mittag.' },
   { id: 'm04', text: 'Am Hafen steht ein Stahltank, so hoch wie ein fünfstöckiges Haus.' },
   { id: 'm05', text: 'Darin: fast neun Millionen Liter Melasse. Zäher, schwarzer Zuckersirup.' },

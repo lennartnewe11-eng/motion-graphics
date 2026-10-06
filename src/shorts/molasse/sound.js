@@ -14,7 +14,7 @@ export function cues() {
   const pop = (t, g = 0.12, pitch = 1) => synth('pop', t, { gain: g, pitch });
 
   // ------------------------------------------------------------------ worlds (ambience beds)
-  sfx('street', 0, { gain: 0.12, dur: 2.6, variant: 0, fadeOut: 0.05, lp: 3500, semis: 0 });
+  sfx('street', 0, { gain: 0.12, dur: CUT.sirup, variant: 0, fadeOut: 0.05, lp: 3500, semis: 0 });
   sfx('harbor', CUT.tank, { gain: 0.2, dur: CUT.inside - CUT.tank + 0.4, variant: 0, fadeIn: 0.3, fadeOut: 0.4, semis: 0 });
   sfx('street', CUT.rattle, { gain: 0.26, dur: W_('m06', 5) - CUT.rattle, variant: 0, fadeIn: 0.15, fadeOut: 0.05, semis: 0, offset: 3 });
   sfx('wind', CUT.deadly, { gain: 0.15, dur: CUT.cold - CUT.deadly + 3.8, variant: 0, fadeIn: 0.6, fadeOut: 1, semis: 0 });
@@ -23,23 +23,24 @@ export function cues() {
   sfx('summer', w('m17', 4) - 0.1, { gain: 0.3, dur: DURATION - w('m17', 4) + 0.1, variant: 0, fadeIn: 0.4, fadeOut: 0.5, semis: 0 });
 
   // ------------------------------------------------------------------ 1 · HOOK
-  sfx('wave', 0, { gain: 0.26, offset: 1.2, dur: 2.62, lead: 0, fadeOut: 0.04, semis: 0, rev: 0.12, lp: 900 });
+  sfx('wave', 0, { gain: 0.26, offset: 1.2, dur: CUT.sirup + 0.02, lead: 0, fadeOut: 0.04, semis: 0, rev: 0.12, lp: 900 });
   synth('impact', 0.0, { gain: 0.7, big: true });
-  sfx('crowd', 0.25, { gain: 0.08, lp: 1400, dur: 2.3, fadeOut: 0.05 });
-  sfx('houses', 1.25, { gain: 0.13, lp: 3000, dur: 1.3, fadeOut: 0.05 });
+  sfx('crowd', 0.25, { gain: 0.08, lp: 1400, dur: CUT.sirup - 0.3, fadeOut: 0.05 });
+  sfx('houses', 1.1, { gain: 0.13, lp: 3000, dur: CUT.sirup - 1.15, fadeOut: 0.05 });
   strip(w('m01', 0), false, -0.3); strip(w('m01', 1), true, 0.3); strip(w('m01', 2), false);
   synth('impact', w('m01', 3), { gain: 0.45 });
   sfx('stamp', w('m01', 3), { gain: 0.5, rate: 0.7, rev: 0.2 });
   strip(w('m01', 4), true, -0.2); strip(w('m01', 5), true, 0.2);
-  [1.75, 2.0, 2.3].forEach((t, i) => sfx('gloop', t, { gain: 0.2, rate: 0.75, pan: (i - 1) * 0.3 }));
+  [1.6, 1.85, 2.1].forEach((t, i) => sfx('gloop', t, { gain: 0.2, rate: 0.75, pan: (i - 1) * 0.3 }));
 
   // ------------------------------------------------------------------ 2 · SIRUP (hard cut to quiet)
   [0, 1, 2, 3].forEach((i) => pop(w('m02', i), 0.1, 0.9 + i * 0.08));
-  sfx('pour', w('m02', 4) - 0.05, { gain: 0.24, dur: 1.3, fadeOut: 0.6 });
-  sfx('gloop', w('m02', 4), { gain: 0.34, rate: 0.8 });
-  synth('stretchGoo', w('m02', 4) + 0.1, { gain: 0.3 });
-  [0.35, 0.62, 0.9].forEach((d, i) => sfx('drip', w('m02', 4) + d, { gain: 0.22, pan: (i - 1) * 0.4 }));
-  sfx('marker', w('m02', 4) + 0.55, { gain: 0.35, variant: 3 });
+  [0, 1, 2].forEach((i) => synth('tick', w('m02', 4) + i * E8 * 0.6, { gain: 0.25, pitch: 0.7 + i * 0.12 }));
+  sfx('pour', w('m02', 5) - 0.05, { gain: 0.24, dur: 1.3, fadeOut: 0.6 });
+  sfx('gloop', w('m02', 5), { gain: 0.34, rate: 0.8 });
+  synth('stretchGoo', w('m02', 5) + 0.1, { gain: 0.3 });
+  [0.35, 0.62, 0.9].forEach((d, i) => sfx('drip', w('m02', 5) + d, { gain: 0.22, pan: (i - 1) * 0.4 }));
+  sfx('marker', w('m02', 5) + 0.55, { gain: 0.35, variant: 3 });
 
   // ------------------------------------------------------------------ 3 · BOSTON
   sfx('newspaper', CUT.boston - 0.02, { gain: 0.55 });
@@ -76,22 +77,22 @@ export function cues() {
   for (let i = 0; i < 4; i++) sfx('paper_slide', w('m06', 1) + 0.08 + i * E16, { gain: 0.14, rate: 1.3, pan: -0.6 + i * 0.4, dur: 0.25 });
   for (let i = 0; i < 4; i++) sfx('marker', w('m06', 1) + 0.12 + i * E16, { gain: 0.12, rate: 1.4, pan: -0.6 + i * 0.4, dur: 0.2 });
   strip(w('m06', 0)); strip(w('m06', 1), true); strip(w('m06', 2), true); strip(w('m06', 3));
-  for (let i = 0; i < 6; i++) sfx('rivet', w('m06', 4) + i * E16 * 0.7, { gain: 0.15, lp: 2600, rev: 0.2, pan: -0.5 });
+  for (let i = 0; i < 6; i++) sfx('rivet', w('m06', 4) + i * E16 * 0.7, { gain: 0.1, lp: 2600, rev: 0.2, pan: -0.5 });
   sfx('paper_slide', w('m06', 5) - 0.04, { gain: 0.3 });
-  sfx('lewis', w('m06', 6) - 0.02, { gain: 0.5, dur: 1.3, fadeOut: 0.2, rev: 0.12, semis: 0 });
+  sfx('lewis', w('m06', 6) - 0.02, { gain: 0.4, dur: 1.3, fadeOut: 0.2, rev: 0.12, semis: 0 });
   pop(w('m06', 5), 0.12, 0.8);
 
   // ------------------------------------------------------------------ 7 · RIVETS
-  sfx('groan', CUT.rivets, { gain: 0.28, dur: 2.5, variant: 0, rate: 0.85, semis: 0 });
+  sfx('groan', CUT.rivets, { gain: 0.18, dur: 2.5, variant: 0, rate: 0.85, semis: 0 });
   strip(w('m07', 3), true);
   for (let i = 0; i < 20; i++) {
     const t = w('m07', 3) + 0.12 + i * E16 * 0.75;
     if (t > CUT.burst - 0.05) break;
-    sfx('rivet', t, { gain: 0.19, pan: ((i * 37) % 9) / 4.5 - 1, rev: 0.08 });
+    sfx('rivet', t, { gain: 0.12, pan: ((i * 37) % 9) / 4.5 - 1, rev: 0.08 });
     if (i % 2 === 0) sfx('gloop', t + 0.05, { gain: 0.1, rate: 1.1 });
   }
   synth('burst', w('m07', 5), { gain: 0.25 });
-  sfx('girder', w('m07', 8) - 0.05, { gain: 0.35, offset: 1.4, dur: 0.9 });
+  sfx('girder', w('m07', 8) - 0.05, { gain: 0.28, offset: 1.4, dur: 0.9 });
   strip(w('m07', 6)); strip(w('m07', 7));
 
   // ------------------------------------------------------------------ 8 · BURST (silence, then everything)
@@ -119,17 +120,17 @@ export function cues() {
   // ------------------------------------------------------------------ 10 · CRUSH
   sfx('paper_toss', CUT.crush, { gain: 0.45 });
   strip(w('m09', 0)); strip(w('m09', 1), true);
-  sfx('houses', w('m09', 2) + 0.05, { gain: 0.4, dur: 1.4, fadeOut: 0.3 });
+  sfx('houses', w('m09', 2) + 0.05, { gain: 0.28, dur: 1.4, fadeOut: 0.3 });
   sfx('gloop', w('m09', 2) + 0.05, { gain: 0.45, rate: 0.6 });
   synth('impact', w('m09', 2) + 0.12, { gain: 0.4 });
   sfx('marker', CUT.crush + 0.3, { gain: 0.2 });
   sfx('paper_tear', w('m09', 4), { gain: 0.5 });
-  sfx('girder', w('m09', 4), { gain: 0.38, dur: 1.4, fadeOut: 0.3 });
+  sfx('girder', w('m09', 4), { gain: 0.26, dur: 1.4, fadeOut: 0.3 });
   sfx('newspaper', w('m09', 5) - 0.12, { gain: 0.4 });
   sfx('highlighter', w('m09', 6), { gain: 0.35 });
   sfx('highlighter', w('m09', 7) - 0.05, { gain: 0.3 });
   strip(w('m09', 3)); strip(w('m09', 5)); strip(w('m09', 6), true); strip(w('m09', 7));
-  for (let i = 0; i < 7; i++) sfx('matches', w('m09', 8) + i * E16 * 0.6, { gain: 0.42, pan: -0.7 + i * 0.23 });
+  for (let i = 0; i < 7; i++) sfx('matches', w('m09', 8) + i * E16 * 0.6, { gain: 0.3, pan: -0.7 + i * 0.23 });
 
   // ------------------------------------------------------------------ 11 · DEADLY (the music falls away)
   sfx('heart', w('m10', 2), { gain: 0.24, dur: 2.0, fadeOut: 0.5, semis: 0 });

@@ -5,10 +5,10 @@
 **Die Melasse-Flut** (`renders/molasse.mp4`) — 56 s, 1080×1920, 30 fps. Boston, 15. Januar 1919: eine 8 m hohe Welle aus
 Sirup tötet 21 Menschen. Bewegte Collage aus gemeinfreiem Archivmaterial (Library of Congress, Wikimedia Commons),
 echte Zeitungen vom Unglückstag mit wortgenauen Markierungen (ALTO-OCR), Melasse als einzige Farbe,
-ElevenLabs-Stimme mit Wort-Zeitstempeln, ElevenLabs-Foley in Round-Robin-Varianten, Score im Code.
+ElevenLabs-Stimme als eine durchgehende Aufnahme mit Wort-Zeitstempeln (Atempausen werden wie im Schnitt gekürzt), ElevenLabs-Foley in Round-Robin-Varianten, Score im Code.
 
 ```bash
-ELEVENLABS_API_KEY=… node scripts/voice.mjs --film molasse   # Sprecher -> assets/molasse/vo + voice.json
+ELEVENLABS_API_KEY=… node scripts/voice.mjs --film molasse   # Sprecher (eine Aufnahme) -> assets/molasse/vo/take.mp3 + voice.json
 ELEVENLABS_API_KEY=… node scripts/sfx.mjs --film molasse     # Foley-Takes -> .scratch/molasse-sfx-raw
 python3 scripts/slice.py molasse                              # Takes -> Varianten in assets/molasse/sfx
 python3 scripts/molasse_cutouts.py && python3 scripts/molasse_plates.py   # Archiv -> Cut-outs/Plates (Quellen: .scratch)

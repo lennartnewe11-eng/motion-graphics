@@ -37,6 +37,6 @@ mit `scripts/molasse_plates.py` und `scripts/molasse_cutouts.py`.
 - Lufttemperatur am Unglückstag ≈ 41 °F (≈ 5 °C).
 
 ## Ton
-- Sprecher: ElevenLabs „Daniel – German Narrator“ (Voice Library).
+- Sprecher: ElevenLabs „Christian Plasa – Dynamic and Vibrant“ (Voice Library), eine durchgehende Aufnahme (`vo/take.mp3`).
 - Foley/Atmos: ElevenLabs Sound Effects (Prompts: `src/shorts/molasse/sfx-prompts.js`).
 - Musik: synthetisiert im Code (`src/shorts/molasse/score.js`).

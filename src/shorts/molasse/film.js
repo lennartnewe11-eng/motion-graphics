@@ -2,7 +2,7 @@
 // Archive collage that moves like film; one colour only (the molasses). See docs/STYLEGUIDE.md §6–§8.
 import { SW, SH, P, bg, loadImages, paperTexture, fibreTexture } from '../lib/collage.js';
 import { FONTS as TYPE_FONTS } from '../lib/type.js';
-import { LINES, DURATION, FPS } from './timeline.js';
+import { LINES, SEGMENTS, DURATION, FPS } from './timeline.js';
 import { SCENES } from './scenes.js';
 import { cues } from './sound.js';
 import { score as filmScore } from './score.js';
@@ -69,7 +69,8 @@ export function cueSheet() {
   return f ? all.filter((c) => new RegExp(f).test(c.url || c.type)) : all;
 }
 
+// the narration: slices of the one take, placed on the film clock (timeline.js trims the long breaths)
 export function voiceTakes() {
-  return LINES.map((l) => ({ t: l.t, url: `/assets/molasse/vo/${l.id}.mp3` }));
+  return SEGMENTS.map((g) => ({ t: g.at, url: '/assets/molasse/vo/take.mp3', offset: Math.max(0, g.from), dur: g.to - Math.max(0, g.from) }));
 }
 export const voice = LINES;

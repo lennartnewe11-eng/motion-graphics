@@ -103,9 +103,19 @@ function sirup(ctx, t) {
     { text: 'aus', role: 'D', size: 78, at: w(3) },
   ], SW / 2, 700, { seed: 2 });
 
-  if (t >= w(4)) {
-    const k = pop(t, w(4), 0.8);
-    const ts = t - w(4);
+  // the spoken pause ("aus … Sirup"): three dots arrive one per eighth, holding the breath
+  if (t >= w(4) && t < w(5)) {
+    for (let i = 0; i < 3; i++) {
+      const k = pop(t, w(4) + i * E8 * 0.6);
+      if (k <= 0) continue;
+      ctx.save(); ctx.translate(SW / 2 + (i - 1) * 90, 1000); ctx.scale(k, k);
+      ctx.fillStyle = rgba(P.ink); ctx.beginPath(); ctx.arc(0, 0, 22, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+  }
+  if (t >= w(5)) {
+    const k = pop(t, w(5), 0.8);
+    const ts = t - w(5);
     const m = liquidBegin(ctx);
     const size = 330;
     m.save();
@@ -129,7 +139,7 @@ function sirup(ctx, t) {
     }
     liquidEnd(ctx, { depth: 10, top: 760, bottom: 1300, t });
   }
-  hand(ctx, 'kein Witz.', 740, 1560, t, w(4) + 0.55, { size: 96, rot: -0.08 });
+  hand(ctx, 'kein Witz.', 740, 1560, t, w(5) + 0.55, { size: 96, rot: -0.08 });
   ctx.restore();
 }
 

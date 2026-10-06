@@ -1,5 +1,5 @@
 // Score of "Die Melasse-Flut": 128.57 BPM (14 frames per beat), D minor, every section follows the story:
-// impact on frame 1 · silence for "Sirup" with a music-box sting · a ticking clockwork groove (Boston,
+// no music under the hook (sound design only) · a ticking clockwork groove that starts on "Boston" (Boston,
 // the tank) · heartbeat and rising strings (the rattle, the rivets) · two beats of nothing · chaos (the
 // wave) · bells in the cold (the dead) · the pulse returns (the company) · a music box for "süß".
 import { kick, clap, snare, hat, shaker, tom, crash, bass, pad, pluck, stab, bell, subDrop, playSfx } from '../../audio/kit.js';
@@ -32,16 +32,8 @@ export function score(ac, bus, at) {
   const pl = (t, m, v, o = {}) => at(t, () => { const g = pluck(ac, music, t, m, v, o); if (o.send) { const s = ac.createGain(); s.gain.value = o.send; g.connect(s); s.connect(delay); } });
   const grid = (a, b, step, fn) => { for (let t = a, i = 0; t < b - 1e-6; t += step, i++) fn(t, i); };
 
-  // ---------------------------------------------------------------- 1 · HOOK: impact, drone, war drums
-  K(0, 1.0);
-  at(0, () => crash(ac, drums, 0, 0.3, rev));
-  at(0, () => subDrop(ac, music, 0, 0.6, 2.4));
-  padAt(0, [38, 50, 57, 62, 65], 2.5, 0.08, { cutoff: 900, attack: 0.02, release: 0.15 });
-  grid(0, CUT.sirup - 0.05, BEAT / 2, (t, i) => at(t, () => tom(ac, drums, t, 0.35 + 0.05 * (i % 2), i % 4 === 3 ? 140 : 95)));
-  at(W_('m01', 3), () => stab(ac, music, W_('m01', 3), [50, 57, 62, 65, 69], 0.12, 0.6));
-
-  // ---------------------------------------------------------------- 2 · SIRUP: silence, then a music box
-  [[0, 77], [0.09, 81], [0.18, 84], [0.4, 89]].forEach(([d, m], i) => bellAt(W_('m02', 4) + d, m, 0.06, 2.4, (i - 1.5) * 0.3, 0.9));
+  // ---------------------------------------------------------------- 1–2 · HOOK: no music — only the world
+  // (the wave, the people, the syrup). The score enters with the story, on "Boston".
 
   // ---------------------------------------------------------------- 3–5 · SETUP: clockwork groove
   const s0 = CUT.boston, s1 = CUT.rattle;
