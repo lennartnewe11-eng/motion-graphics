@@ -5,7 +5,7 @@
 //   node scripts/analog.mjs                                   out/assecor-master.mp4 -> renders/assecor-imagefilm.mp4
 //   node scripts/analog.mjs --in a.mp4 --out b.mp4
 //   node scripts/analog.mjs --stills out/stills --out out/analog-stills   (single frames, for look development)
-//   --strength 0..1   how much CRT (default 0.3 = light; 1 = full reference look)
+//   --strength 0..1   how much CRT (default 0.12 = a faint touch; 1 = full reference look)
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -34,12 +34,12 @@ async function makeGrille() {
 
 // the look, as one filtergraph: [0]=picture, [1]=grille.
 // k = strength 0..1 (1 = full CRT, as in the reference; the film uses a light touch by default)
-const K = Number(opt('strength', 0.3));
+const K = Number(opt('strength', 0.12));
 function look(k, still = false) {
   const f = (x, d = 3) => Number(x.toFixed(d));
   const op = 0.36 * k;
   const sw = Math.round((1920 * (1 + 0.04 * k)) / 2) * 2, sh = Math.round((1080 * (1 + 0.04 * k)) / 2) * 2;
-  const shift = Math.max(1, Math.round(4 * k));
+  const shift = Math.round(4 * k);
   return [
     '[0:v]format=gbrp,split=3[a][b][c]',
     // halation: wide, soft bloom of the highlights, screen-blended

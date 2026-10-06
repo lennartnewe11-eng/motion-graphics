@@ -18,7 +18,7 @@ die weißen Linien-Icons (Chip, Würfel, Handschlag …, als Draw-on), die Stage
 (Buchstabe für Buchstabe maskiert) und der Website-Claim „Wir bringen Technologie dorthin, wo sie Wirkung entfaltet.“
 
 **Analoger Look** nach „analog filter referenz Video“ (`scripts/analog.mjs`, ffmpeg) — bewusst dezent eingesetzt
-(`--strength 0.3`; `1` = voller Referenz-Look): Aperture-Grille-Phosphorstreifen, Halation/Bloom, Soft-Focus,
+(`--strength 0.12`; `1` = voller Referenz-Look): Aperture-Grille-Phosphorstreifen, Halation/Bloom, Soft-Focus,
 horizontaler Farb-Smear und RGB-Versatz, Röhrenwölbung, Vignette, angehobene Schwarzwerte, Flackern, Rauschen und
 Phosphor-Nachleuchten; dazu Staub und CRT-Ein-/Ausschalten im Bild.
 
@@ -51,7 +51,7 @@ ELEVENLABS_API_KEY=… node scripts/voice.mjs --film assecor   # Stimme -> asset
 ELEVENLABS_API_KEY=… node scripts/music-assecor.mjs           # Score  -> assets/assecor/music/score.mp3
 ELEVENLABS_API_KEY=… node scripts/sfx-assecor.mjs             # Foley  -> assets/assecor/sfx/*.mp3
 node scripts/render.mjs --film assecor                        # sauberer Master -> out/assecor-master.mp4
-node scripts/analog.mjs [--strength 0.3]                      # CRT-Look -> renders/assecor-imagefilm.mp4
+node scripts/analog.mjs [--strength 0.12]                     # CRT-Look -> renders/assecor-imagefilm.mp4
 npm run preview  # dann /src/index.html?preview&film=assecor
 ```
 
