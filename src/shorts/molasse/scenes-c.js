@@ -263,7 +263,7 @@ function paint(ctx, t) {
       const len = p * (0.86 + 0.14 * r1);
       const xe = lerp(x0, x1, len);
       const yy = y + (b - 15) * 6 + r2 * 3;
-      pm.lineWidth = 4 + ((b * 7) % 5) * 1.6;
+      pm.lineWidth = 11 + ((b * 7) % 5) * 2;
       pm.beginPath();
       const n = 10;
       for (let k = 0; k <= n; k++) {

@@ -381,12 +381,18 @@ function crush(ctx, t) {
       strip(ctx, 0, -55, 700, 190, { seed: 52 });
       setFont(ctx, 'G', 170); ctx.textAlign = 'center'; ctx.fillStyle = rgba(P.ink); ctx.fillText('HÄUSER', 0, 0); ctx.letterSpacing = '0px';
       ctx.restore();
-      // the mass that squashes it
+      // a slab of syrup drops onto the word and squashes it
       const m = liquidBegin(ctx);
-      const yb = lerp(1250, 1400 + (1 - sq) * 140, ease.inCubic(clamp((t - w(2)) / 0.14)));
-      fillBelow(m, surface(-40, SW + 40, 0, t, { amp: 6 }).map(([x]) => [x, yb + noise3(x * 0.01, t, 3) * 20]), -200);
-      dripsAlong(m, [[200, yb], [400, yb], [640, yb], [880, yb]], t, w(2), { n: 5, maxL: 90, w: 22, seed: 6 });
-      liquidEnd(ctx, { depth: 9, top: -100, bottom: yb, t });
+      const yb = lerp(1100, 1430 + (1 - sq) * 60, ease.inCubic(clamp((t - w(2)) / 0.14)));
+      const top = yb - 230;
+      m.beginPath();
+      m.moveTo(-40, top + noise3(0, t, 2) * 20);
+      for (let x = -40; x <= SW + 40; x += 40) m.lineTo(x, top + noise3(x * 0.006, t * 0.8, 2) * 26);
+      for (let x = SW + 40; x >= -40; x -= 40) m.lineTo(x, yb + noise3(x * 0.01, t, 3) * 18);
+      m.closePath();
+      m.fill();
+      dripsAlong(m, [[200, yb], [400, yb], [640, yb], [880, yb]], t, w(2) + 0.1, { n: 5, maxL: 90, w: 22, seed: 6 });
+      liquidEnd(ctx, { depth: 9, top, bottom: yb, t });
     }
   } else {
     stripRow(ctx, t, [['und', 'D', 80, w(3)]], SW / 2 - 330, 1360, { seed: 53 });
