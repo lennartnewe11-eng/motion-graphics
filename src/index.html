@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Claude — Motion Reel</title>
+<style>
+  @font-face { font-family: InterV; src: url(/node_modules/@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2) format('woff2'); font-weight: 100 900; }
+  @font-face { font-family: 'Instrument Serif'; src: url(/node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2) format('woff2'); font-style: italic; font-weight: 400; }
+  @font-face { font-family: 'Instrument Serif'; src: url(/node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2) format('woff2'); font-style: normal; font-weight: 400; }
+  @font-face { font-family: 'JetBrains Mono'; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2) format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'JetBrains Mono'; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2) format('woff2'); font-weight: 500; }
+  @font-face { font-family: 'JetBrains Mono'; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2) format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'JetBrains Mono'; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-800-normal.woff2) format('woff2'); font-weight: 800; }
+  @font-face { font-family: Syne; src: url(/node_modules/@fontsource/syne/files/syne-latin-800-normal.woff2) format('woff2'); font-weight: 800; }
+  @font-face { font-family: 'Playfair Display'; src: url(/node_modules/@fontsource/playfair-display/files/playfair-display-latin-900-italic.woff2) format('woff2'); font-style: italic; font-weight: 900; }
+  @font-face { font-family: Unbounded; src: url(/node_modules/@fontsource/unbounded/files/unbounded-latin-900-normal.woff2) format('woff2'); font-weight: 900; }
+  @font-face { font-family: 'Bebas Neue'; src: url(/node_modules/@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2) format('woff2'); font-weight: 400; }
+  @font-face { font-family: Fraunces; src: url(/node_modules/@fontsource/fraunces/files/fraunces-latin-900-normal.woff2) format('woff2'); font-weight: 900; }
+  @font-face { font-family: 'Space Grotesk'; src: url(/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2) format('woff2'); font-weight: 700; }
+  html, body { margin: 0; background: #0E0E10; color: #F2EDE4; font: 14px 'JetBrains Mono', monospace; }
+  canvas#stage { display: block; width: 1920px; height: 1080px; }
+  body.preview canvas#stage { width: min(100vw, calc((100vh - 48px) * 16 / 9)); height: auto; margin: 0 auto; }
+  #bar { display: none; height: 48px; align-items: center; gap: 16px; padding: 0 16px; }
+  body.preview #bar { display: flex; }
+  #scrub { flex: 1; height: 6px; background: #333; position: relative; cursor: pointer; border-radius: 3px; }
+  #scrub > div { position: absolute; inset: 0 auto 0 0; background: #FF4F1A; border-radius: 3px; }
+  button { font: inherit; background: #F2EDE4; color: #0E0E10; border: 0; padding: 6px 14px; border-radius: 99px; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas id="stage" width="1920" height="1080"></canvas>
+<div id="bar"><button id="play">Play</button><div id="scrub"><div></div></div><span id="tc">00:00</span></div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
