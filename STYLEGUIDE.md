@@ -129,20 +129,89 @@ Gilt für **alle zukünftigen Projekte** in diesem Repo, sofern das Briefing nic
 
 88,9 s · 25 fps. (Die zuerst hochgeladene „Typografie“-Datei war ein Duplikat dieser Referenz.)
 
+### 2.1 Grundprinzip
+
 - **Satz baut sich Wort für Wort zum Voice-over auf**, jedes Wort erscheint im Moment des Sprechens
-  (harter Pop-on, kein Fade); der Satz bleibt stehen, bis er komplett ist.
-- **Mischsatz:** fette Grotesk + kursive Serif im selben Satz („**Edge** *is* ⚙ *working on something* **big**“),
-  Betonungswort fett.
-- **Wort-Karten:** Einzelwörter auf wechselnden Pastellflächen, Schnitt pro Wort („At / Edge / decided / focus / things …“).
-- **Riesen-Wörter mit Bild:** formatfüllende Condensed-Black-Wörter („CARBON“, „HUGE“, „IMAGINE“), Fotos oder
-  Illustrationen stehen *in* oder *vor* den Buchstaben; ein Wort tauscht im gleichen Layout gegen das nächste
-  („CARBON“ → „THE“ → „WORLD“).
-- **Echte Fotos:** Polaroids, gerissene Fotos, Collage aus Ausschnitten (Mund-Collage), Luftbilder, Footage.
-- **Handgezeichnete Ebene:** Pfeile (auch viele, die auf ein Wort zeigen), Unterstreichungen, Durchstreichen
-  („2050“), Handschrift-Notizen („Ready?“, „That’s right“, „But now!“), Strichzeichnungen (Stadt), Gravur-Figuren.
-- **Zahlen als Event:** Zähler in dunkler Box („39 %“), Sieben-Segment-Ziffern auf Schwarz.
-- **Pacing:** ruhiger als die Typo-Referenz — Wort-Takt der Stimme, Bildwechsel alle 0,5–2 s.
+  (harter Pop-on, kein Fade); der Satz bleibt stehen, bis er komplett ist, dann harter Schnitt.
+- **Mischsatz:** fette Grotesk + kursive Serif im selben Satz („**Edge** *is* ⚙ *working on something* **big**“).
+  Regel: **Inhaltswort fett/Grotesk, Funktionswort kursiv/Serif** („*we need* to change *our entire* **way of thinking**“).
+- **Pacing:** Wort-Takt der Stimme; Bildwechsel alle 0,5–2 s. Zwischen dichten Szenen immer wieder **Wort-Karten**
+  (ein Wort auf Pastellfläche, Schnitt pro Wort: „At / Edge / decided / focus / things / that / can / do“) als Atempause.
 - **Achtung:** Die Referenz nutzt Eck-Labels und Fadenkreuze — **diese übernehmen wir nicht mehr** (Regel 0.1).
+
+### 2.2 Animierte Avatare / Figuren
+
+Figuren sind in der Referenz **Mitspieler der Typo**, nie Deko. Beobachtete Typen:
+
+| Typ | Beispiel (Zeit) | Wie animiert |
+|---|---|---|
+| **Linien-Figur** (monoline, schwarz, ~2 px, wie Icon-Stil) | Mann mit Tasche (3–7 s) | **Gehzyklus** (ca. 8 Phasen, 12,5 fps → bewusst „auf Zweien“), läuft *vor/hinter* Buchstaben her („HUGE“) und **wandert durch den Schnitt** in die nächste Szene (gleiche Bildposition) — er verbindet die Szenen |
+| **Flache Charakter-Illustrationen** (Gouache-/Flat-Look, unterschiedliche Menschen) | Reihe „ALL OF US“ (7,5–9 s) | stehen in einer Reihe **vor einem Riesenwort**, das zwischen ihnen durchscheint; Animation nur **Idle-Loops**: Kopf neigen, Gewicht verlagern, Kind zupft am Arm, Kamera fährt langsam seitlich (Parallax: Figuren schneller als Wort). Neue Figuren schieben sich von rechts in die Reihe, sobald „all of us“ gesprochen wird |
+| **Gravur-/Kupferstich-Figur** (Vintage-Ausschnitt) | Herr mit Zylinder „Walk the walk“ (19,5–21 s), Mann mit Globus „accounting for everything“ (77–79 s) | **Cut-out-Animation**: Körperteile als Einzelteile (Beine, Arm mit Stock) im Schritt-Zyklus, Körper fährt leicht auf/ab; Text links/rechts **um die Figur herum** gesetzt |
+| **Silhouetten-Figur** (dunkle Fläche, wenige Linien) | kopfloser Torso mit Wasserglas (74–77 s) | fast still; nur Hand/Glas bewegt sich leicht — die **Ruhe der Figur** lässt den sich aufbauenden Satz wirken |
+| **Foto-Mensch** | Kind im Astronautenhelm, Schwimmerin von oben | echtes Foto/Footage als Bildträger; Text daneben/darauf, Linien-Figur läuft davor |
+
+Regeln für eigene Avatare:
+- **Eine Figurenwelt pro Szene**, Stil passend zur Aussage (Linie = Konzept/Prozess, Flat-Charaktere = Menschen/Vielfalt,
+  Gravur = Tradition/Ironie, Silhouette = Ernst/Nachdenken).
+- **Figur reagiert aufs Wort:** „walk“ → sie geht; „all of us“ → Figuren treten hinzu; „big“ → sie wirkt winzig neben dem Wort;
+  „change“ → sie hebt etwas hoch. Nie eine Figur, die nur herumsteht, während etwas anderes gesagt wird.
+- **Animation auf Zweien/Dreien** (8–12 Zeichnungen/s) statt butterweicher 60-fps-Interpolation — wirkt handgemacht.
+- **Idle-Loop immer an** (atmen, Gewicht, Blinzeln), auch wenn die Figur „steht“.
+- **Figuren als Bindeglied:** dieselbe Figur läuft über einen Schnitt weiter oder wechselt den Stil in der neuen Szene.
+- Im Canvas-Code: Figur als Gelenk-Rig aus Teilen (`translate/rotate` je Glied, Winkel aus einer Pose-Tabelle pro Phase),
+  Linien-Figuren mit `stroke()` aus `lib.js` (Boil an), Idle via `noise2(t*0.5, seed)` auf Kopf-/Rumpfwinkel.
+
+### 2.3 Formen und Typografie folgen dem Gesagten
+
+Die Referenz übersetzt fast jedes Schlüsselwort in eine **Bedeutungsgeste** — Form, Schnitt, Position oder Bewegung
+des Wortes *zeigen*, was es sagt:
+
+| Gesagt | Typografische / formale Antwort |
+|---|---|
+| „big“, „HUGE“ | Wort wächst von Satzgröße auf **formatfüllende Condensed Black**; „big“ bekommt einen Pfeil, der es anschiebt |
+| „working“ | Zahnrad-Icon **ersetzt das Leerzeichen** und dreht sich |
+| „planet“ | Wort wird **durchgestrichen** (Handstrich) — Bruch in der Aussage |
+| „all of us“ | Riesenwort hinter einer Reihe Menschen; „all of us“ handschriftlich unterstrichen |
+| „not just talking about“ | Wörter stapeln sich **eingerückt** mit senkrechter Linie links (Zitat-Geste) |
+| „the time to talk“ | Collage aus **Mündern** (Foto-Schnipsel), Wörter erscheinen daneben |
+| „Walk the walk“ | Wörter **links und rechts der gehenden Figur**, „Walk“ fett, „the walk“ leicht |
+| „decided / focus“ | Wechsel der Wortbreite/Größe: „*focus*“ größer, kursiv, mittig |
+| „CARBON“ | Buchstaben werden von **Bläschen/Partikeln gefüllt**, die sich auflösen → Wort wird massiv schwarz |
+| „emissions worldwide“ | Riesenwort tauscht **im selben Layout** gegen das nächste (CARBON → IN → THE → WORLD), Buchstaben schnappen einzeln um; kleiner Globus-Badge bleibt als Konstante, „Worldwide“ als Handschrift-Anmerkung |
+| „energy into improving“ | **Dutzende Handpfeile** zeigen aus allen Richtungen auf das Wort, immer mehr pro Wort — Energie wird gebündelt; bei „just this“ bleibt **ein** Pfeil |
+| „IMAGINE … improved“ | Buchstaben fehlen und tauchen auf („IM GI E“ → „IMAGINE“), **„NEW“-Sticker** klebt sich auf; Wort zerfällt, nur „E“ bleibt; Wechsel zu kursiv „*Improved*“ mit Sticker |
+| „our future“ | Wörter über **Luftbild einer Stadt**, mit Speed-Lines hineingezogen |
+| „We’re NOT just …“ | „NOT“ als **verdrehte, gequetschte Riesenbuchstaben** in Weiß, eingeschoben zwischen kleine Wörter |
+| „We do this already“ | **Handschwung** (dicker weißer Pinselstrich) wischt über eine Karte, während die Wörter erscheinen |
+| „NO“ | Wort auf Schwarz in einem **Auswahlrahmen mit Anfassern** (Design-Tool-Geste), der Rahmen skaliert mit — Wort wird „angefasst“ und größer |
+| „Going the extra mile“ | Wort **dehnt sich wörtlich**: „MIL———E“, eine Linie zieht „mile“ in die Länge |
+| „change“ | Wort **wechselt beim Erscheinen die Schrift** (Serif-Italic → Grotesk Bold), Buchstaben einzeln — es ändert sich, während es gesagt wird |
+| „offsetting emissions“ | Wörter über Langzeitbelichtung (Lichtspuren), kursiv/fett gemischt |
+| „accounting for the embodied carbon in all materials“ | **Materialfotos** (Erde, Stahl, Holz, Maschinen) poppen rund um den Satz auf, je ein Bild pro Substantiv |
+| „Not in 2050“ | Kreis im Zentrum eines Musters aus **Halbkreisen** (rhythmisch pulsierend), „2050“ wird **durchgestrichen**, „But now!“ in Handschrift darunter |
+| „Absolutely“, „For sure“, „That’s right“, „Are you ready?“ | **Handschrift-Antworten** einer zweiten Stimme — kommentieren den Satz, oft eingekreist |
+| Zahlen („22 % → 39 %“) | Zahl in **schwarzer Box**, zählt hoch, „Staggering“ handschriftlich daneben |
+
+Daraus abgeleitete Regeln:
+1. **Pro Satz mindestens ein Wort mit Bedeutungsgeste** (dehnen, durchstreichen, ersetzen, füllen, wachsen, fallen, drehen).
+2. **Wörtlich nehmen:** Verben werden zu Bewegungen (gehen, wachsen, wechseln, ziehen), Substantive zu Bildern/Icons,
+   Adjektive zu Formeigenschaften (groß/fett, neu/Sticker, schnell/Speed-Lines).
+3. **Form-Wechsel = Bedeutungs-Wechsel:** Schriftwechsel im Wort nur dort, wo sich inhaltlich etwas ändert („change“).
+4. **Layout behalten, Inhalt tauschen:** Bei Aufzählungen bleibt das Raster gleich, nur das Wort springt (CARBON → WORLD).
+5. **Zweite Stimme in Handschrift:** kurze Kommentare (max. 2–3 Wörter) als Reaktion auf die Aussage.
+6. **Formen als Rhythmus-Träger:** Muster (Halbkreise, Pfeilfelder, Bläschen) pulsieren im Takt und werden mit dem Satz
+   dichter oder lichter.
+
+### 2.4 Weitere Mittel
+
+- **Riesen-Wörter mit Bild:** formatfüllende Condensed-Black-Wörter („CARBON“, „HUGE“, „IMAGINE“), Fotos oder
+  Illustrationen stehen *in* oder *vor* den Buchstaben.
+- **Echte Fotos:** Polaroids, gerissene Fotos (Vulkan reißt entzwei → Szene kippt), Collage aus Ausschnitten,
+  Luftbilder, Footage; Fotos fliegen in Raster mit kleiner Bildunterschrift.
+- **Übergänge:** Papier zerknüllen (Foto knüllt sich zum Ball), Pinselstrich übermalt das Bild, Riss, harte Schnitte.
+- **Handgezeichnete Ebene:** Pfeile, Unterstreichungen, Durchstreichen, Handschrift-Notizen, Strichzeichnungen (Stadt), Gravur-Figuren.
+- **Zahlen als Event:** Zähler in dunkler Box, Sieben-Segment-Ziffern auf Schwarz.
 
 ## 3. Analog-Filter-Referenz („analog filter referenz Video“)
 
@@ -150,10 +219,102 @@ Gilt für **alle zukünftigen Projekte** in diesem Repo, sofern das Briefing nic
 Wölbung, Vignette, Rauschen, Nachleuchten. Umgesetzt in `scripts/analog.mjs`, Stärke über `--strength`
 (→ Regel 0.2: nur ~0.12).
 
-## 4. Allgemeine Arbeitsweise (bewährt)
+## 4. Sounddesign — Vielfalt statt Wiederholung
+
+### 4.1 Problem im Assecor-Film
+
+Die Effekte wirkten repetitiv: `scribble` (11×), `blocks` (11×) und `underline` (10×) kamen jeweils aus **genau einem Sample**,
+nur die Tonhöhe wurde leicht verschoben. Das Ohr erkennt dasselbe Geräusch nach dem 3. Mal.
+
+### 4.2 Regeln gegen Wiederholung
+
+1. **Jedes Geräusch gibt es in 4–6 Varianten** (Round-Robin): eigene Aufnahmen/Generierungen, nicht nur Pitch-Shift.
+   Beim Abspielen zufällig (seeded) wählen, nie dieselbe Variante zweimal hintereinander.
+2. **Pro Abspielung variieren:** Tonhöhe ±1–3 Halbtöne, Lautstärke ±2 dB, Start-Offset 0–30 ms, Pan je nach Bildposition,
+   Hall-Anteil je nach Raum (Papier = trocken, Riesenwort = großer Raum).
+3. **Max. 3× dasselbe Sample pro 10 s.** Ab dem 4. Ereignis gleicher Art auf eine Nachbar-Kategorie ausweichen
+   (z. B. statt Marker-Kritzeln → Bleistift → Kreide → Filzstift auf Karton).
+4. **Bildgröße = Klanggröße:** kleines Wort → kleiner, trockener Klick; formatfüllendes Wort → Body + Sub + Hall.
+5. **Schichten statt Einzelsounds:** Akzente aus 2–3 Lagen bauen (Transient + Körper + Luft/Tail), die Lagen getrennt variieren.
+6. **Stille ist ein Effekt:** vor großen Momenten 2–4 Beats ohne SFX (nur Musik oder Atem), dann der Hit.
+7. **Material des Bildes hören:** Papier klingt nach Papier, Pixel nach Digital, Foto nach Foto — Geräusch immer vom
+   sichtbaren Material ableiten, nicht aus einer Standardliste.
+8. **Quantisieren auf den Beat**, aber 10–20 ms vor dem Bild-Ereignis starten (Transienten wirken sonst verspätet).
+
+### 4.3 Sound-Bibliothek (zu generieren, z. B. ElevenLabs Sound Effects, je 4–6 Varianten)
+
+**Papier & Analog-Collage**
+- Papier reißen: langsam, schnell, nur Ecke, dicker Karton, Zeitungspapier, Seidenpapier
+- Papier knüllen: kurz, lang, Ball wird geworfen, Ball landet
+- Blatt umblättern, Blatt gleitet über Tisch, Stapel abgelegt, Blatt in Mappe geschoben
+- Schere schneidet (1 Schnitt / mehrere), Cutter-Klinge über Papier
+- Klebeband abreißen und aufkleben, Masking-Tape, Sticker abziehen + aufdrücken („NEW“-Badge)
+- Polaroid: Auswurf, Schütteln, auf Tisch fallen, Foto in Rahmen stecken
+- Büroklammer, Heftklammer (Tacker), Reißzwecke in Kork, Gummiband schnalzt
+- Stempel: Gummi auf Papier, Stempelkissen, Prägestempel (Metall)
+- Briefumschlag öffnen, Karteikarte ziehen
+
+**Schreib- und Zeichengeräusche (Hand-Ebene)**
+- Filzstift: Strich kurz/lang, Kreis, Unterstreichen, Haken, Kreuz, Durchstreichen, Pfeil (2 Striche)
+- Bleistift (weich/hart), Kugelschreiber klicken + schreiben, Füller kratzen
+- Kreide an Tafel, Marker auf Whiteboard (quietschend), Edding auf Karton
+- Pinselstrich nass (für Übermal-Wischer), Sprühdose kurz, Textmarker (breit, weich)
+- Radiergummi, Spitzer, Lineal ablegen
+
+**Typo-Bewegungen (abstrakt, für Wörter)**
+- Wort-Pop: weich (Lippen-Pop), holzig (Woodblock), gläsern (Glas-Tick), gummiartig
+- Buchstaben-Ticks: Schreibmaschine, Letterpress-Satz (Bleilettern), Scrabble-Steine, Fliesen-Klick
+- Wort dehnt sich: Gummiband-Stretch, Tape-Stop/Tape-Start, Akkordeon
+- Wort schrumpft/zieht ein: Reverse-Swell, Luft ansaugen, Maßband einrollen
+- Wort fällt/landet: Holzklotz auf Tisch, Buch fällt, Sandsack, kleines Metall-Klonk
+- Wort zerfällt/glitcht: Datenkorruption, Bitcrush-Stotter, Kassette verheddert, Funkstörung
+- Schriftwechsel im Wort: Diaprojektor-Klack, Kamera-Blende, Lichtschalter, Karten-Shuffle
+- Durchstreichen: Reißverschluss kurz, Marker schnell, Messer über Papier
+
+**UI & Digital (bei Tech-Kunden)**
+- Tastatur: einzelner mechanischer Anschlag, Leertaste, Enter, schnelles Tippen, Laptop-Tastatur (flach)
+- Maus: Klick, Doppelklick, Scrollrad-Ratschen, Trackpad-Tap
+- Textauswahl/Drag (leises Gleiten), Ordner öffnen, Datei in Ordner fallen lassen, Papierkorb
+- Notification-Varianten (mind. 3 unterschiedliche, nie Systemtöne kopieren), Chat-Bubble-Pop, Nachricht gesendet
+- Toggle an/aus, Slider, Haken-Bestätigung, Fehler-Ton (weich), Ladebalken-Ticks
+- Zähler: Odometer-Rollen, Zahlenrad, Kassenzähler, Sieben-Segment-Piepen
+- Server/Daten: Lüfter-Swell, Festplatten-Seek, Modem-Fragment (sehr kurz), Datenpakete (Granular-Blips)
+- Pixel-Blöcke: 8-Bit-Plink (3 Tonhöhen), Lego-Klick, Tetris-artiges Einrasten (eigenständig klingend)
+
+**Übergänge & Bewegung**
+- Whoosh: Luft kurz, Stoff-Wedeln, Papier-Wedeln, Pfeil vorbei, Peitsche (soft), Vorbeiflug tief
+- Swipe/Wisch: Hand über Tisch, Pinsel, Rakel
+- Riser: Atem einziehen, Streicher-Swell, Reverse-Becken, Shepard-Ton (kurz), Tape-Speed-Up
+- Downer/Sub-Drops: Tape-Stop, Bass-Abfall, Fahrstuhl-Stopp
+- Impacts: Tür zuschlagen (dumpf), Pauke, Faust auf Tisch, Buch zuklappen, Holzkiste, Sub-Thump
+- Zoom/Kamera: Objektiv-Zoom-Motor, Fokus-Ring, Dia-Wechsel, Filmprojektor anlaufen
+- Wipes: Vorhang, Rollladen, Jalousie, Schiebetür
+
+**Figuren & Avatare**
+- Schritte auf verschiedenen Böden (Holz, Kies, Teppich, Asphalt), Schritte auf Zweien passend zum Gehzyklus
+- Stock/Schirm tippt auf, Tasche wird abgestellt, Kleidung raschelt (bei Bewegung)
+- Menschen-Murmeln (kurz, ohne Worte), Lachen gedämpft, „hm?“-Atem, Klatschen einzeln/Gruppe
+- Glas abstellen, Wasser einschenken, Kaffeetasse, Stuhl rücken
+
+**Natur, Material & Welt (für Fotos/Footage)**
+- Stadt-Ambience (fern), Verkehr vorbei, Baustelle (Kran, Hammer), Bahn/Tram, Wind auf Dach
+- Wasser (Plätschern, Welle), Feuer (Knistern), Eis bricht, Steine rollen, Holz knarrt
+- Strom/Energie: Summen, Funke, Schalter umlegen, Neon flackert an
+
+**Analog-Look (sehr leise darunter)**
+- CRT an/aus, Röhren-Brummen (50 Hz, kaum hörbar), Vinyl-Knistern, Tape-Hiss, Projektor-Rattern, VHS-Tracking-Glitch
+
+### 4.4 Mischverhältnis
+
+- Stimme vorne (−14 LUFS Master), Musik ducked unter Stimme, SFX **unter** der Stimme, nur Akzente (Impacts, Drops) dürfen sie kurz erreichen.
+- Faustregel Dichte: **1–2 SFX pro Sekunde** in ruhigen Passagen, bis 4/s in Montage-Passagen; alle 8–16 s ein großer Akzent.
+- Jede Szene bekommt eine **Klangfarbe** (z. B. Papier-Szene trocken & nah, Daten-Szene digital & weit) — Szenenwechsel
+  hört man auch am Wechsel der Klangfamilie.
+
+## 5. Allgemeine Arbeitsweise (bewährt)
 
 - Voice-over zuerst (ElevenLabs mit Wort-Zeitstempeln), Musik mit Composition Plan auf festem BPM, dann jede
   Schnitt-/Wortzeit ins Beat-Raster legen (`timeline.js`).
-- Foley (Papier, Marker, Stempel, Klicks) + synthetische UI-Sounds pro Szene als Cue-Liste neben dem Bild definieren.
+- Foley + synthetische UI-Sounds pro Szene als Cue-Liste neben dem Bild definieren; Samples immer in Varianten generieren (→ Abschnitt 4).
 - Markenanalyse von der Website: Farben aus CSS, Schriften aus `@font-face`, Logo/Icons als Original-Vektoren übernehmen.
 - Vor dem Final-Render Standbilder pro Szene prüfen; den Master sauber rendern und Looks (Filter) als eigenen Pass darüber legen.
