@@ -4,7 +4,7 @@ import { scheduleScore } from './score.js';
 
 export const SAMPLE_RATE = 48000;
 
-export async function renderMix(cues, duration, { solo = null } = {}) {
+export async function renderMix(cues, duration, { solo = null, score = scheduleScore, voice = [] } = {}) {
   const ac = new OfflineAudioContext(2, Math.ceil(duration * SAMPLE_RATE), SAMPLE_RATE);
   initKit(ac);
   resetRandom();
@@ -57,13 +57,40 @@ export async function renderMix(cues, duration, { solo = null } = {}) {
   const duck = ac.createGain(); duck.gain.value = 1;
   musicIn.connect(duck); duck.connect(master);
   const sfx = ac.createGain(); sfx.gain.value = 1.55; sfx.connect(master);
+
+  // voice-over bus (ElevenLabs narration), with the rest of the mix ducking underneath
+  const vduck = ac.createGain();
+  duck.disconnect(); duck.connect(vduck); vduck.connect(master);
+  const dDuck = ac.createGain();
+  drums.disconnect(); drums.connect(dDuck); dDuck.connect(master);
+  if (voice.length) {
+    const vIn = ac.createGain(); vIn.gain.value = solo && solo !== 'voice' ? 0 : 2.4;
+    const vHp = ac.createBiquadFilter(); vHp.type = 'highpass'; vHp.frequency.value = 90;
+    const vPres = ac.createBiquadFilter(); vPres.type = 'peaking'; vPres.frequency.value = 3200; vPres.gain.value = 2.5;
+    const vComp = ac.createDynamicsCompressor();
+    vComp.threshold.value = -22; vComp.ratio.value = 3; vComp.attack.value = 0.005; vComp.release.value = 0.12;
+    vIn.connect(vHp); vHp.connect(vPres); vPres.connect(vComp); vComp.connect(master);
+    const vRev = ac.createGain(); vRev.gain.value = 0.06; vComp.connect(vRev); vRev.connect(revIn);
+    const bufs = await Promise.all(voice.map(async (v) => ac.decodeAudioData(await (await fetch(v.url)).arrayBuffer())));
+    voice.forEach((v, i) => {
+      const src = ac.createBufferSource();
+      src.buffer = bufs[i];
+      src.connect(vIn);
+      src.start(v.t);
+      const end = v.t + bufs[i].duration;
+      for (const [g, depth] of [[vduck.gain, 0.25], [dDuck.gain, 0.5]]) {
+        g.setTargetAtTime(depth, v.t - 0.1, 0.05);
+        g.setTargetAtTime(1, end + 0.05, 0.25);
+      }
+    });
+  }
   // stem solo for mix analysis (reverb/delay returns stay on)
-  if (solo) for (const [k, g] of [['drums', drums], ['music', duck], ['sfx', sfx]]) if (k !== solo) g.gain.value = 0;
+  if (solo) for (const [k, g] of [['drums', drums], ['music', musicIn], ['sfx', sfx]]) if (k !== solo) g.gain.value = 0;
 
   // Nodes are created just-in-time in short windows (suspend/resume) so the live graph stays small.
   const events = [];
   const at = (t, fn) => events.push([t, fn]);
-  const kicks = scheduleScore(ac, { drums, music: musicIn, rev: revIn, delay: delayIn, sfx }, at);
+  const kicks = score(ac, { drums, music: musicIn, rev: revIn, delay: delayIn, sfx }, at);
 
   // sidechain: duck the music bus on every kick
   for (const t of kicks) {

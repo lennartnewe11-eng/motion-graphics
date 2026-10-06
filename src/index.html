@@ -28,6 +28,12 @@
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="goo" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <feGaussianBlur stdDeviation="22"/>
+    <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 34 -15"/>
+  </filter>
+</svg>
 <canvas id="stage" width="1920" height="1080"></canvas>
 <div id="bar"><button id="play">Play</button><div id="scrub"><div></div></div><span id="tc">00:00</span></div>
 <script type="module" src="./main.js"></script>

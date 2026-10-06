@@ -1,4 +1,33 @@
-# Claude — Motion Design Reel
+# Claude — Motion Design
+
+Zwei Filme, komplett aus Code gebaut:
+
+- **Flow** (`renders/claude-flow.mp4`) — 50 s One-Take ohne einen einzigen Schnitt, mit Voice-over (ElevenLabs).
+- **Motion Reel** (`renders/claude-motion-reel.mp4`) — 56 s Kapitel-Showreel.
+
+## Flow — One Take, 0 Cuts
+
+Jedes Element wird zum nächsten, die Kamera bleibt ununterbrochen in Bewegung:
+
+Punkt → Linie → Welle → Ring → das „O" von **FLOW** → Slice-&-Smear → fließende Linien mit „Bewegung." als Text-on-Path →
+die Linien wickeln sich zu Ringen → 3D-Tunnel (Ringe morphen auf dem Beat, Wörter fliegen durch die Kamera) → Licht →
+3D-Punktfeld (2.560 Punkte, Kick-Wellen) → Punkte formen „TAKT." → Spirale → Tropfen → Liquid-Metaballs (SVG-Goo) →
+„Flow." aus der Flüssigkeit gestanzt → drei Tropfen erstarren zu Karten (Easing-Kurve, Variable Font, Wireframe-Würfel) →
+Flip, Stack, die oberste Karte fliegt in die Linse → der Punkt wird zum Ball der Marke → „Claude." → alles faltet sich zurück in den ersten Punkt.
+
+**Voice-over:** ElevenLabs (`eleven_multilingual_v2`, Stimme `SiMvlSW9cKKHDYT4BzOp`) *mit Wort-Zeitstempeln*:
+jedes Wort auf dem Screen erscheint exakt in dem Moment, in dem es gesprochen wird; Musik und Drums ducken unter der Stimme.
+Neu generieren (Key wird nie gespeichert):
+
+```bash
+ELEVENLABS_API_KEY=… node scripts/voice.mjs          # -> assets/vo/*.mp3 + src/flow/voice.json
+node scripts/render.mjs --film flow                   # -> renders/claude-flow.mp4
+npm run preview  # dann /src/index.html?preview&film=flow
+```
+
+---
+
+# Motion Reel
 
 Ein 56-Sekunden-Showreel (1920×1080, 60 fps, Stereo-Sound), gebaut wie eine Bewerbung als Motion Designer.
 **Jedes Frame und jeder Ton ist Code:** keine Keyframes von Hand, keine Samples, keine Loops, keine Stock-Assets.

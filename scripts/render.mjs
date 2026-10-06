@@ -23,7 +23,8 @@ const opt = (name, def) => {
 const FPS = Number(opt('fps', 60));
 const WORKERS = Number(opt('workers', Math.max(1, Math.min(4, os.cpus().length - 1))));
 const OUT_DIR = path.join(ROOT, 'out');
-const FINAL = path.resolve(ROOT, opt('out', 'renders/claude-motion-reel.mp4'));
+const FILM = opt('film', 'reel');
+const FINAL = path.resolve(ROOT, opt('out', FILM === 'reel' ? 'renders/claude-motion-reel.mp4' : `renders/claude-${FILM}.mp4`));
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 const LAUNCH = { args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--ignore-gpu-blocklist', '--disable-background-timer-throttling', '--disable-renderer-backgrounding'] };
@@ -43,7 +44,7 @@ async function openPage(srv, tag) {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   page.on('console', (m) => console.log(`[${tag}] ${m.text()}`));
   page.on('pageerror', (e) => console.error(`[${tag}] PAGE ERROR`, e));
-  await page.goto(`http://127.0.0.1:${srv.port}/src/index.html`);
+  await page.goto(`http://127.0.0.1:${srv.port}/src/index.html?film=${FILM}`);
   await page.waitForFunction(() => window.REEL);
   return { browser, page };
 }
@@ -153,7 +154,9 @@ try {
   } else if (opt('audio-only')) {
     console.log('audio →', await audio(srv));
   } else {
-    const from = Number(opt('from', 0)), to = Number(opt('to', 56));
+    let duration = 56;
+    { const { browser, page } = await openPage(srv, 'meta'); duration = await page.evaluate(() => window.REEL.DURATION); await browser.close(); }
+    const from = Number(opt('from', 0)), to = Number(opt('to', duration));
     console.log(`Rendering ${from}s → ${to}s @ ${FPS} fps with ${WORKERS} workers`);
     const v = await video(srv, Math.round(from * FPS), Math.round(to * FPS));
     if (opt('no-audio')) {

@@ -592,6 +592,112 @@ const SFX = {
   },
 };
 
+// ---- sound design for the "Flow" film
+Object.assign(SFX, {
+  heart(ac, b, c) {
+    for (const [dt, v] of [[0, 1], [0.17, 0.6]]) {
+      const t = c.t + dt;
+      const o = osc(ac, 'sine', 90, t, 0.4);
+      o.frequency.setValueAtTime(95, t);
+      o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
+      const g = gainNode(ac, 0);
+      perc(g, t, 0.9 * v * c.gain, 0.28, 0.004);
+      chain(o, filt(ac, 'lowpass', 300), g, b.out);
+    }
+  },
+  laser(ac, b, c) {
+    const o = osc(ac, 'sine', 200, c.t, 0.5);
+    o.frequency.exponentialRampToValueAtTime(2600, c.t + 0.14);
+    const g = gainNode(ac, 0);
+    perc(g, c.t, 0.35 * c.gain, 0.4, 0.004);
+    chain(o, g, b.out);
+    const s = gainNode(ac, 0.5); g.connect(s); s.connect(b.delay);
+    sweep(ac, b.out, c.t, 0.45, { f0: 800, f1: 9000, v: 0.4 * c.gain, shape: 'perc', q: 2, p0: -0.8, p1: 0.8 });
+  },
+  flip(ac, b, c) {
+    for (const dt of [0, 0.07]) sweep(ac, b.out, c.t + dt, 0.09, { f0: 2500, f1: 900, v: 0.45 * c.gain, shape: 'perc', q: 2.5 });
+  },
+  slice(ac, b, c) {
+    const o = osc(ac, 'sine', 3400, c.t, 0.6);
+    o.frequency.exponentialRampToValueAtTime(2900, c.t + 0.5);
+    const g = gainNode(ac, 0);
+    perc(g, c.t, 0.18 * c.gain, 0.55, 0.001);
+    chain(o, g, b.out);
+    const s = gainNode(ac, 0.6); g.connect(s); s.connect(b.rev);
+    sweep(ac, b.out, c.t, 0.5, { f0: 6000, f1: 1200, v: 0.55 * c.gain, shape: 'perc', q: 1.2, p0: 0.7, p1: -0.9 });
+    subDrop(ac, b.out, c.t, 0.4 * c.gain, 0.5);
+  },
+  passby(ac, b, c) {
+    const p = c.pan || 0;
+    sweep(ac, b.out, c.t - 0.15, 0.3, { f0: 500, f1: 4000, v: 0.5 * c.gain, shape: 'rise', q: 1.2, p0: p, p1: p });
+    sweep(ac, b.out, c.t + 0.15, 0.45, { f0: 3000, f1: 300, v: 0.45 * c.gain, shape: 'perc', q: 1.2, p0: p, p1: -p });
+  },
+  swarm(ac, b, c) {
+    const d = c.dur || 0.6;
+    for (let i = 0; i < 60; i++) {
+      const t = c.t + Math.pow(rnd(), 0.6) * d;
+      SFX.tick(ac, b, { t, gain: c.gain * (0.15 + rnd() * 0.35), pitch: 0.6 + rnd() * 1.6, pan: rnd() * 1.8 - 0.9 });
+    }
+  },
+  lock(ac, b, c) {
+    SFX.click(ac, b, { ...c, pitch: 0.8 });
+    tom(ac, b.out, c.t, 0.6 * c.gain, 110);
+    [62, 69, 74].forEach((m, i) => {
+      const g = pluck(ac, b.out, c.t + i * 0.012, m + 12, 0.12 * c.gain, { decay: 0.5, cutoff: 4000 });
+      const s = gainNode(ac, 0.4); g.connect(s); s.connect(b.rev);
+    });
+  },
+  drip(ac, b, c) {
+    const o = osc(ac, 'sine', 500, c.t, 0.3);
+    o.frequency.setValueAtTime(420, c.t);
+    o.frequency.exponentialRampToValueAtTime(1500, c.t + 0.07);
+    const g = gainNode(ac, 0);
+    perc(g, c.t, 0.6 * c.gain, 0.18, 0.003);
+    chain(o, g, b.out);
+    const s = gainNode(ac, 0.6); g.connect(s); s.connect(b.rev);
+  },
+  blob(ac, b, c) {
+    const pp = c.pitch || 1;
+    const o = osc(ac, 'sine', 200 * pp, c.t, 0.35);
+    o.frequency.setValueAtTime(160 * pp, c.t);
+    o.frequency.exponentialRampToValueAtTime(420 * pp, c.t + 0.1);
+    o.frequency.exponentialRampToValueAtTime(240 * pp, c.t + 0.3);
+    const g = gainNode(ac, 0);
+    perc(g, c.t, 0.5 * c.gain, 0.3, 0.01);
+    chain(o, filt(ac, 'lowpass', 1400, 4), g, b.out);
+    const s = gainNode(ac, 0.3); g.connect(s); s.connect(b.rev);
+  },
+  stretchGoo(ac, b, c) {
+    const o = osc(ac, 'sawtooth', 70, c.t, 0.6);
+    o.frequency.exponentialRampToValueAtTime(220, c.t + 0.35);
+    const lfo = osc(ac, 'sine', 18, c.t, 0.6);
+    const lg = gainNode(ac, 12); lfo.connect(lg); lg.connect(o.frequency);
+    const lp = filt(ac, 'lowpass', 300, 8);
+    lp.frequency.exponentialRampToValueAtTime(1800, c.t + 0.3);
+    lp.frequency.exponentialRampToValueAtTime(400, c.t + 0.55);
+    const g = gainNode(ac, 0);
+    ahr(g, c.t, 0.25 * c.gain, 0.05, 0.3, 0.2);
+    chain(o, lp, g, b.out);
+    subDrop(ac, b.out, c.t + 0.1, 0.5 * c.gain, 0.8);
+  },
+  harden(ac, b, c) {
+    [86, 90, 93, 98].forEach((m, i) => {
+      const g = gainNode(ac, 1);
+      bell(ac, g, c.t + i * 0.04, m, 0.07 * c.gain, 1.0, (i - 1.5) * 0.4);
+      g.connect(b.out);
+      const s = gainNode(ac, 0.7); g.connect(s); s.connect(b.rev);
+    });
+    SFX.click(ac, b, { ...c, gain: c.gain * 0.6, pitch: 1.3 });
+  },
+  cardSlap(ac, b, c) {
+    const n = noise(ac, c.t, 0.08);
+    const g = gainNode(ac, 0);
+    perc(g, c.t, 0.6 * c.gain, 0.06, 0.001);
+    chain(n, filt(ac, 'bandpass', 1300, 1.2), g, b.out);
+    tom(ac, b.out, c.t, 0.35 * c.gain, 150);
+  },
+});
+
 export function playSfx(ac, bus, cue) {
   const f = SFX[cue.type];
   if (!f) { console.warn('unknown sfx', cue.type); return; }

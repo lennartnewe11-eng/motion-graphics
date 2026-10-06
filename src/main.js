@@ -1,7 +1,16 @@
 // Page runtime: font loading, motion-blurred frame rendering, YUV export, preview player.
 import { W, H, clamp } from './engine/core.js';
-import { compose, init, blurSamples, FPS, DURATION, cueSheet } from './reel.js';
 import { renderMix } from './audio/index.js';
+
+// Which film to load: ?film=reel (default) or ?film=flow
+const FILM = new URLSearchParams(location.search).get('film') || 'reel';
+const film = await import(FILM === 'flow' ? './flow/film.js' : './reel.js');
+const { compose, init, blurSamples, FPS, DURATION, cueSheet } = film;
+const mixOpts = (o = {}) => ({
+  ...o,
+  score: film.score,
+  voice: (film.voice || []).map((v) => ({ t: v.t, url: `/assets/vo/${v.id}.mp3` })),
+});
 
 const canvas = document.getElementById('stage');
 const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
@@ -124,7 +133,8 @@ async function wsConnect(url) {
 }
 
 window.REEL = {
-  FPS, DURATION,
+  FPS, DURATION, FILM,
+  voice: () => film.voice || [],
   boot,
   async run({ from, to, fps = FPS, ws }) {
     await boot();
@@ -151,7 +161,7 @@ window.REEL = {
   },
   async audio(ws, opts = {}) {
     await boot();
-    const buf = await renderMix(cueSheet(), DURATION, opts);
+    const buf = await renderMix(cueSheet(), DURATION, mixOpts(opts));
     const sock = await wsConnect(ws);
     const L = buf.getChannelData(0), R = buf.getChannelData(1);
     const out = new Float32Array(L.length * 2);
@@ -175,7 +185,7 @@ if (location.search.includes('preview')) {
   const stop = () => { if (src) { src.stop(); src = null; } playing = false; btn.textContent = 'Play'; };
   const play = async () => {
     if (!actx) actx = new AudioContext({ sampleRate: 48000 });
-    if (!audioBuf) { btn.textContent = 'Rendering audio…'; audioBuf = await renderMix(cueSheet(), DURATION); }
+    if (!audioBuf) { btn.textContent = 'Rendering audio…'; audioBuf = await renderMix(cueSheet(), DURATION, mixOpts()); }
     src = actx.createBufferSource();
     src.buffer = audioBuf;
     src.connect(actx.destination);
