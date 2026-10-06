@@ -248,20 +248,32 @@ function paint(ctx, t) {
     pts.slice(0, 3).forEach(([x, y, L], i) => handCircle(c, x, y + L * 0.5, 46, 36 + L * 0.55, 1, { width: 6, t, seed: 5 + i }));
   });
   // brush strokes: three passes, on "braun", "an-", "-streichen"
-  const strokes = [[w(5) - 0.05, 830], [w(6), 930], [w(6) + 0.35, 1030]];
+  const strokes = [[w(5) - 0.05, 820], [w(6), 925], [w(6) + 0.35, 1030]];
   const pm = liquidBegin(ctx);
   pm.lineCap = 'round'; pm.lineJoin = 'round';
   strokes.forEach(([ts, y], i) => {
     const p = ease.inOutCubic(clamp((t - ts) / 0.32));
     if (p <= 0) return;
-    const x0 = i % 2 ? 1060 : 20, x1 = i % 2 ? 20 : 1060;
-    const xe = lerp(x0, x1, p);
-    // bristle texture: many parallel thin strokes
-    for (let b = 0; b < 26; b++) {
-      pm.lineWidth = 6 + ((b * 7) % 5) * 2;
-      const yy = y + (b - 13) * 6.5 + noise3(b, i, 2) * 4;
-      const endJ = noise3(b, i, 5) * 40 * (1 - p);
-      pm.beginPath(); pm.moveTo(x0, yy); pm.quadraticCurveTo((x0 + xe) / 2, yy - 18, xe + endJ, yy + 6); pm.stroke();
+    const dir = i % 2 ? -1 : 1;
+    const x0 = dir > 0 ? -20 : SW + 20, x1 = dir > 0 ? SW + 20 : -20;
+    const tilt = (i - 1) * 0.05;
+    // bristles: uneven lengths, a dry-brush tail, the stroke thins where the paint runs out
+    for (let b = 0; b < 30; b++) {
+      const r1 = noise3(b * 0.7, i, 2), r2 = noise3(b * 0.9, i, 5);
+      const len = p * (0.86 + 0.14 * r1);
+      const xe = lerp(x0, x1, len);
+      const yy = y + (b - 15) * 6 + r2 * 3;
+      pm.lineWidth = 4 + ((b * 7) % 5) * 1.6;
+      pm.beginPath();
+      const n = 10;
+      for (let k = 0; k <= n; k++) {
+        const u = k / n;
+        const x = lerp(x0, xe, u), yv = yy + (x - SW / 2) * tilt + Math.sin(u * 3 + i) * 10;
+        // dry gaps in the last third
+        if (u > 0.7 && noise3(b * 1.3, k, i + 9) > 0.35) { pm.moveTo(x, yv); continue; }
+        k ? pm.lineTo(x, yv) : pm.moveTo(x, yv);
+      }
+      pm.stroke();
     }
   });
   liquidEnd(ctx, { depth: 3, gloss: 0.35, top: 400, bottom: 1000, t, warm: 0.6 });
