@@ -33,7 +33,7 @@ const FONTS = [
 let ready = null;
 function boot() {
   if (!ready) ready = (async () => {
-    await Promise.all(FONTS.map((f) => document.fonts.load(f, 'AaÄÖÜß0123')));
+    await Promise.all(FONTS.map((f) => document.fonts.load(f, 'AaÄÖÜß0123ćČ')));
     await document.fonts.ready;
     await init();
   })();
