@@ -17,7 +17,18 @@ node scripts/render.mjs --film molasse --stills 0.5,24        # Standbilder
 node scripts/render.mjs --film molasse --audio-only --solo sfx # Stem zur Mix-Analyse
 ```
 
-Regeln für die Reihe: `docs/STYLEGUIDE.md` §6–§8, Themen-Pool: `docs/THEMEN.md`, Quellen: `assets/molasse/SOURCES.md`.
+**Vesna** (`renders/vesna.mp4`) — 61 s. 26. Januar 1972: Stewardess Vesna Vulović überlebt einen Sturz aus 10 160 m
+ohne Fallschirm. Nur aus echten Fotos geschnittene Elemente (NASA-DC-9, das Auslieferungsfoto von YU-AHT, Wolken 1931/1940,
+Highsmith-Schneewald, UPI-Fotos von ihr), kühles Monochrom auf Schwarz, Signalorange als einzige Farbe.
+
+```bash
+python3 scripts/vesna_assets.py                               # Fotos -> Cut-outs/Plates (Quellen: .scratch/vesna)
+ELEVENLABS_API_KEY=… node scripts/voice.mjs --film vesna      # Sprecher, eine Aufnahme
+ELEVENLABS_API_KEY=… node scripts/sfx.mjs --film vesna && python3 scripts/slice.py vesna
+node scripts/render.mjs --film vesna                          # -> renders/vesna.mp4
+```
+
+Regeln für die Reihe: `docs/STYLEGUIDE.md` §6–§9, Themen-Pool: `docs/THEMEN.md`, Quellen: `assets/<film>/SOURCES.md`.
 
 ---
 

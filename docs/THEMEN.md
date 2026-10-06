@@ -23,7 +23,7 @@ Status: ☐ offen · ◐ in Arbeit · ☑ fertig
 
 | | Thema | Hook | Auflösung | Typo-Idee |
 |---|---|---|---|---|
-| ☐ | **Vesna Vulović** | Eine Frau fällt **10.160 m** ohne Fallschirm — und überlebt. | Flugbegleiterin 1972, eingeklemmt im Wrackteil, Schneehang | Zahl fällt durchs ganze Hochformat |
+| ◐ | **Vesna Vulović** | Eine Frau fällt **10.160 m** ohne Fallschirm — und überlebt. | Flugbegleiterin 1972, eingeklemmt im Wrackteil, Schneehang | Zahl fällt durchs ganze Hochformat |
 | ☐ | **Tsutomu Yamaguchi** | „Er überlebte **zwei** Atombomben.“ | Geschäftsreise Hiroshima → Heimkehr nach Nagasaki | „1“ und „2“ als Flash-Karten auf Schwarz, Stille dazwischen |
 | ☐ | **Hiroo Onoda** | Ein Soldat kämpft weiter — **29 Jahre** nach Kriegsende. | Niemand sagte es ihm offiziell; erst sein Ex-Vorgesetzter beendete es 1974 | Kalender zählt hoch, Seiten reißen ab |
 | ☐ | **Phineas Gage** | Eisenstange durch den Kopf — der Mann **steht auf**. | 1848, überlebte, Persönlichkeit veränderte sich → Hirnforschung | Stange ersetzt das „I“, spießt das Wort auf |

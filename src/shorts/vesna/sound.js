@@ -42,10 +42,10 @@ export function cues() {
   const w4 = (i) => W_('v04', i);
   paper(CUT.flight + 0.05, 0.3, 0.3);
   [[w4(0), 2], [w4(1), 3], [w4(2), 4], [w4(3), 3], [w4(4), 3], [w4(6), 9], [w4(8) - 0.05, 7]].forEach(([t, n], i) =>
-    sfx('flap', t, { gain: 0.16 + n * 0.012, pan: -0.25 + (i % 3) * 0.25, dur: Math.min(0.6, 0.12 + n * 0.05), fadeOut: 0.05 }));
+    sfx('flap', t, { gain: 0.12 + n * 0.01, pan: -0.25 + (i % 3) * 0.25, dur: Math.min(0.6, 0.12 + n * 0.05), fadeOut: 0.05 }));
   sfx('marker', w4(3), { gain: 0.3, variant: 4 });
   sfx('marker', w4(4), { gain: 0.25, variant: 0 });
-  [w4(6) - 0.32, w4(6) - 0.2, w4(6) - 0.08].forEach((t, i) => sfx('scissors', t, { gain: 0.3, pan: 0.2 - i * 0.1 }));
+  [w4(6) - 0.32, w4(6) - 0.2, w4(6) - 0.08].forEach((t, i) => sfx('scissors', t, { gain: 0.18, pan: 0.2 - i * 0.1 }));
   sfx('jet_pass', w4(6) + 0.1, { gain: 0.17, lp: 2500, dur: CUT.board - w4(6) + 0.3, fadeIn: 0.3, fadeOut: 0.3, semis: 0 });
 
   // ------------------------------------------------------------------ 4 · BOARD

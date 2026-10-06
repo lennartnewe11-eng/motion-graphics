@@ -428,3 +428,32 @@ Referenz 1 (Senioren-Collage) als Material, aber **in Bewegung wie ein Film**. T
 - SFX-Bus duckt unter der Stimme (−6 dB), Musik −12 dB, Drums −6 dB — **pro zusammenhängender Sprechphase**
   (Segmente < 0,35 s Abstand zusammenfassen), sonst hebt das Release eines Segments das Ducking des nächsten auf.
 - **Stille als Ereignis:** vor der Explosion 2 Beats nur Herzschlag; vor „süß“ eine echte Pause.
+
+## 9. Variante „Nacht“ (Vesna Vulović, `src/shorts/vesna/`)
+
+Zweiter Film der Reihe, Feedback-Vorgaben: **nur echte, aus Fotos geschnittene Elemente**, wenig weißer Hintergrund,
+maximale Ästhetik, spannende Typografie, Hook = altes Flugzeug stürzt durch Wolken dem Boden entgegen.
+
+- **Farbwelt:** kühles Monochrom (Tinte `#090C11` → Stahl → Schnee), alle Fotos per `vesna_assets.py: grade()` auf
+  dieselbe Kurve gezogen; **einzige Farbe Signalorange** (`#FF541A`): Höhenmesser, Marker, Bruchkanten, Feuer, die eine
+  Überlebende. Rotes JAT-Logo/Schriftzug wird beim Graden zu Orange (`red_to_orange`) → das echte Flugzeug trägt die Filmfarbe.
+- **Kein Weiß als Fläche:** Dokumente werden zum Hintergrund statt auf Weiß zu liegen — Auslieferungsfoto von YU-AHT als
+  Bühne (Kennzeichen markiert), Dienstplan als **Durchschlag auf Kohlepapier-Blau**, Zitat über dem Interviewfoto 1973.
+  Wortstreifen sind **dunkle** gerissene Papiere (`tag()`); helle Streifen nur als Akzent.
+- **Wolken aus Fotos** (Van Rossem 1931, B-17 1940): Alpha aus Helligkeit, Bildränder lösen sich entlang verrauschter
+  Kanten auf (nie ein Rechteck). Wolkenfelder mit Tiefe (`cloudField`): fern = dunkler/kleiner/langsamer, nah = schnell
+  vor dem Motiv; **Gasse** (`lane`) hält die Bildmitte frei, damit das Flugzeug lesbar bleibt.
+- **Fall-Hook:** Kamera fällt mit; Wolken reißen nach oben, Durchschlag durch die Wolkendecke (White-out), der Wald steigt
+  von unten ins Bild und wächst, Höhenmesser läuft von 10 160 m ab (nur Zehner rollen, Rest springt — sonst Brei).
+  Aufprall = Schnee-Flash, dann **Schwarz und Stille**; erst „überlebt“ bringt ihr Gesicht.
+- **Echte Maschine:** YU-AHT wird **aus dem Auslieferungsfoto geschnitten und hebt ab** (Loch bleibt im Foto, Schatten
+  wächst) — Collage als Handlung. BiRefNet scheitert an Weiß-auf-Weiß → Umriss zusätzlich von Hand als Polygon (Union).
+- **Zerbrechen:** Bruchlinien einmal definiert, alle Teile teilen sie (passen zusammen); verkohlte Kanten nur auf
+  Flugzeugpixeln (Offscreen-Canvas, `source-atop`), gecacht pro Brennstufe.
+- **Zahlen als Bild:** 28 Fenster des echten Rumpfes leuchten, 27 gehen aus (je ein Schalterklick), eines bleibt orange.
+- **Typo-Gesten:** Fallblatt-Anzeige für Datum/Flug/Route, fallende Buchstaben („gestürzt“), Doppeldruck mit Versatz
+  („verwechselt“), zerquetscht zwischen zwei Balken („eingeklemmt“), gebrochene Wörter mit Riss („gebrochen“),
+  Echo-Konturen („schreien“), radiert („an nichts“), durchgestrichen („Glück“).
+- **Loop:** Die letzte halbe Sekunde ist der Fall *vor* Frame 1 (`fall(t − DURATION)`) — harter Schnitt auf den Wind.
+- **Mix:** Wind/Absturz breitbandig → Tiefpass 2,4 kHz und leise (≈ −8 dB unter Stimme im Sprachband), Explosion und
+  Aufprall dürfen kurz darüber, weil sie zwischen Wörtern liegen.
