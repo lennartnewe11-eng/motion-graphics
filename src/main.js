@@ -1,21 +1,28 @@
 // Page runtime: font loading, motion-blurred frame rendering, YUV export, preview player.
-import { W, H, clamp } from './engine/core.js';
+import { W as W0, H as H0, clamp } from './engine/core.js';
 import { renderMix } from './audio/index.js';
 
-// Which film to load: ?film=reel (default) or ?film=flow
+// Which film to load: ?film=reel (default), ?film=flow or ?film=<short> (src/shorts/<short>/film.js)
 const FILM = new URLSearchParams(location.search).get('film') || 'reel';
-const film = await import(FILM === 'flow' ? './flow/film.js' : './reel.js');
+const film = await import(FILM === 'flow' ? './flow/film.js' : FILM === 'reel' ? './reel.js' : `./shorts/${FILM}/film.js`);
 const { compose, init, blurSamples, FPS, DURATION, cueSheet } = film;
+// frame size: films may define their own format (shorts are 1080x1920)
+const W = film.W || W0, H = film.H || H0;
 const mixOpts = (o = {}) => ({
   ...o,
   score: film.score,
-  voice: (film.voice || []).map((v) => ({ t: v.t, url: `/assets/vo/${v.id}.mp3` })),
+  // voice entries: { t, url, offset?, dur? } — films may split a take (e.g. a dramatic pause)
+  voice: film.voiceTakes ? film.voiceTakes() : (film.voice || []).map((v) => ({ t: v.t, url: `/assets/vo/${v.id}.mp3` })),
+  sfxDuck: film.sfxDuck ?? 1,
 });
 
 const canvas = document.getElementById('stage');
+canvas.width = W; canvas.height = H;
+canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
 const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
 
 const FONTS = [
+  ...(film.FONTS || []),
   '400 40px InterV', '900 40px InterV', '600 40px InterV',
   'italic 400 40px "Instrument Serif"', '400 40px "Instrument Serif"',
   '400 40px "JetBrains Mono"', '500 40px "JetBrains Mono"', '700 40px "JetBrains Mono"', '800 40px "JetBrains Mono"',
@@ -40,7 +47,7 @@ const vignette = new Float32Array(N_PIX);
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const dx = (x - W / 2) / (W / 2), dy = (y - H / 2) / (H / 2);
   const d = Math.sqrt(dx * dx * 0.8 + dy * dy * 0.9);
-  vignette[y * W + x] = 1 - 0.09 * Math.pow(clamp(d - 0.35, 0, 1) / 0.65, 2.2);
+  vignette[y * W + x] = 1 - (film.vignette ?? 0.09) * Math.pow(clamp(d - 0.35, 0, 1) / 0.65, 2.2);
 }
 // Pre-baked film grain tile (approximately gaussian, deterministic).
 const GT = 1024;
@@ -51,7 +58,8 @@ const grain = new Float32Array(GT * GT);
   for (let i = 0; i < grain.length; i++) grain[i] = (r() + r() + r() - 1.5) * 2.0;
 }
 
-const SHUTTER = 0.5; // 180°
+const SHUTTER = film.SHUTTER ?? 0.5; // 180°
+const GA = film.grainAmount ?? 1;
 
 function accumulate(frame, fps) {
   const t = frame / fps;
@@ -91,7 +99,7 @@ function toYUV(n, frame) {
       const r = acc[q] * v, g = acc[q + 1] * v, b = acc[q + 2] * v;
       const Y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
       const mid = 1 - Math.abs(Y / 127.5 - 1);
-      let yv = 16 + Y * 0.858824 + grain[gRow + ((x + ox) & (GT - 1))] * (1.1 + 1.6 * mid);
+      let yv = 16 + Y * 0.858824 + grain[gRow + ((x + ox) & (GT - 1))] * GA * (1.1 + 1.6 * mid);
       yv = yv < 16 ? 16 : yv > 235 ? 235 : yv;
       yuv[i] = yv + 0.5;
       const c = cRow + (x >> 1);
@@ -133,7 +141,7 @@ async function wsConnect(url) {
 }
 
 window.REEL = {
-  FPS, DURATION, FILM,
+  FPS, DURATION, FILM, W, H,
   voice: () => film.voice || [],
   boot,
   async run({ from, to, fps = FPS, ws }) {

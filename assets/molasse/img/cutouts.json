@@ -1,0 +1,50 @@
+{
+ "p_woman": {
+  "src": "loc/wood_boston.jpg",
+  "x": 157.5,
+  "y": 745.5,
+  "scale": 0.5
+ },
+ "p_boy_wood": {
+  "src": "loc/wood_boston.jpg",
+  "x": 340.0,
+  "y": 864.0,
+  "scale": 0.5
+ },
+ "p_girl_box": {
+  "src": "loc/wood_boston.jpg",
+  "x": 462.0,
+  "y": 905.0,
+  "scale": 0.5
+ },
+ "p_girl_wood": {
+  "src": "loc/wood_boston.jpg",
+  "x": 680.5,
+  "y": 947.5,
+  "scale": 0.5
+ },
+ "p_man_bowler": {
+  "src": "loc/wood_boston.jpg",
+  "x": 1297.5,
+  "y": 763.5,
+  "scale": 0.5
+ },
+ "p_boy_walk": {
+  "src": "loc/wood_boston.jpg",
+  "x": 2187.5,
+  "y": 899.5,
+  "scale": 0.5
+ },
+ "lewis_gun": {
+  "src": "loc/lewis_gun.jpg",
+  "x": 1337.5,
+  "y": 1288.5,
+  "scale": 0.5
+ },
+ "fire_fg": {
+  "src": "raw/GreatMolassesFlood_1919-Wreckage_under_the_elevated_tracks.jpg",
+  "x": 278.0,
+  "y": 1084.0,
+  "scale": 0.5
+ }
+}

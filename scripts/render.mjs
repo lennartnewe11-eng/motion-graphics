@@ -20,11 +20,12 @@ const opt = (name, def) => {
   return v === undefined || v.startsWith('--') ? true : v;
 };
 
-const FPS = Number(opt('fps', 60));
+let FPS = Number(opt('fps', 0)); // 0 = the film's own frame rate
+let W = 1920, H = 1080;
 const WORKERS = Number(opt('workers', Math.max(1, Math.min(4, os.cpus().length - 1))));
 const OUT_DIR = path.join(ROOT, 'out');
 const FILM = opt('film', 'reel');
-const FINAL = path.resolve(ROOT, opt('out', FILM === 'reel' ? 'renders/claude-motion-reel.mp4' : `renders/claude-${FILM}.mp4`));
+const FINAL = path.resolve(ROOT, opt('out', FILM === 'reel' ? 'renders/claude-motion-reel.mp4' : FILM === 'flow' ? 'renders/claude-flow.mp4' : `renders/${FILM}.mp4`));
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 const LAUNCH = { args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--ignore-gpu-blocklist', '--disable-background-timer-throttling', '--disable-renderer-backgrounding'] };
@@ -41,10 +42,10 @@ function run(cmd, argv, { quiet = false } = {}) {
 
 async function openPage(srv, tag) {
   const browser = await chromium.launch(LAUNCH);
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  const page = await browser.newPage({ viewport: { width: W, height: H } });
   page.on('console', (m) => console.log(`[${tag}] ${m.text()}`));
   page.on('pageerror', (e) => console.error(`[${tag}] PAGE ERROR`, e));
-  await page.goto(`http://127.0.0.1:${srv.port}/src/index.html?film=${FILM}`);
+  await page.goto(`http://127.0.0.1:${srv.port}/src/index.html?film=${FILM}${opt('cues') ? '&cues=' + encodeURIComponent(opt('cues')) : ''}`);
   await page.waitForFunction(() => window.REEL);
   return { browser, page };
 }
@@ -78,7 +79,7 @@ async function video(srv, f0, f1) {
     jobs.push((async () => {
       const ff = spawn('ffmpeg', [
         '-y', '-loglevel', 'error',
-        '-f', 'rawvideo', '-pix_fmt', 'yuv420p', '-s', '1920x1080', '-r', String(FPS), '-i', '-',
+        '-f', 'rawvideo', '-pix_fmt', 'yuv420p', '-s', `${W}x${H}`, '-r', String(FPS), '-i', '-',
         '-c:v', 'libx264', '-preset', 'slow', '-crf', '15', '-pix_fmt', 'yuv420p', '-profile:v', 'high',
         '-color_range', 'tv', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709',
         '-threads', '2', seg,
@@ -148,6 +149,12 @@ async function audio(srv) {
 }
 
 const srv = await startServer();
+{ // format of the film (frame size, frame rate, duration)
+  const { browser, page } = await openPage(srv, 'meta');
+  const m = await page.evaluate(() => ({ W: window.REEL.W, H: window.REEL.H, FPS: window.REEL.FPS }));
+  await browser.close();
+  W = m.W || W; H = m.H || H; if (!FPS) FPS = m.FPS || 60;
+}
 try {
   if (opt('stills')) {
     await stills(srv, String(opt('stills')).split(',').map(Number));

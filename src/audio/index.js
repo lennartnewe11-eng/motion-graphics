@@ -4,7 +4,7 @@ import { scheduleScore } from './score.js';
 
 export const SAMPLE_RATE = 48000;
 
-export async function renderMix(cues, duration, { solo = null, score = scheduleScore, voice = [] } = {}) {
+export async function renderMix(cues, duration, { solo = null, score = scheduleScore, voice = [], sfxDuck = 1 } = {}) {
   const ac = new OfflineAudioContext(2, Math.ceil(duration * SAMPLE_RATE), SAMPLE_RATE);
   initKit(ac);
   resetRandom();
@@ -56,7 +56,8 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
   const musicIn = ac.createGain(); musicIn.gain.value = 0.75;
   const duck = ac.createGain(); duck.gain.value = 1;
   musicIn.connect(duck); duck.connect(master);
-  const sfx = ac.createGain(); sfx.gain.value = 1.55; sfx.connect(master);
+  const sfx = ac.createGain(); sfx.gain.value = 1.55;
+  const sDuck = ac.createGain(); sDuck.gain.value = 1; sfx.connect(sDuck); sDuck.connect(master);
 
   // voice-over bus (ElevenLabs narration), with the rest of the mix ducking underneath
   const vduck = ac.createGain();
@@ -76,9 +77,11 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
       const src = ac.createBufferSource();
       src.buffer = bufs[i];
       src.connect(vIn);
-      src.start(v.t);
-      const end = v.t + bufs[i].duration;
-      for (const [g, depth] of [[vduck.gain, 0.25], [dDuck.gain, 0.5]]) {
+      // optional sub-range of the take (offset/dur) so a film can open a pause inside a line
+      const off = v.offset || 0, len = v.dur ?? bufs[i].duration - off;
+      src.start(v.t, off, len);
+      const end = v.t + len;
+      for (const [g, depth] of [[vduck.gain, 0.25], [dDuck.gain, 0.5], [sDuck.gain, sfxDuck]]) {
         g.setTargetAtTime(depth, v.t - 0.1, 0.05);
         g.setTargetAtTime(1, end + 0.05, 0.25);
       }
@@ -99,7 +102,29 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
     duck.gain.setTargetAtTime(1.0, t + 0.04, 0.075);
   }
 
-  for (const c of cues) at(c.t, () => playSfx(ac, { out: sfx, rev: revIn, delay: delayIn }, c));
+  // recorded foley (ElevenLabs takes, sliced into variants): cue = { t, url, gain, pan, rate, rev, dur, lp, hp }
+  const sampleUrls = [...new Set(cues.filter((c) => c.url).map((c) => c.url))];
+  const sampleBufs = new Map(await Promise.all(sampleUrls.map(async (u) => [u, await ac.decodeAudioData(await (await fetch(u)).arrayBuffer())])));
+  const playSample = (c) => {
+    const src = ac.createBufferSource();
+    src.buffer = sampleBufs.get(c.url);
+    src.playbackRate.value = c.rate || 1;
+    const g = ac.createGain();
+    const gain = c.gain ?? 1;
+    const len = c.dur ?? (src.buffer.duration - (c.offset || 0)) / (c.rate || 1);
+    if (c.fadeIn) { g.gain.setValueAtTime(0, c.t); g.gain.linearRampToValueAtTime(gain, c.t + c.fadeIn); } else g.gain.setValueAtTime(gain, c.t);
+    const fo = c.fadeOut ?? Math.min(0.08, len * 0.3);
+    g.gain.setValueAtTime(gain, Math.max(c.t, c.t + len - fo));
+    g.gain.linearRampToValueAtTime(0, c.t + len);
+    let node = src;
+    if (c.lp) { const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = c.lp; node.connect(f); node = f; }
+    if (c.hp) { const f = ac.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = c.hp; node.connect(f); node = f; }
+    const p = ac.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, c.pan || 0));
+    node.connect(g); g.connect(p); p.connect(c.bus === 'amb' ? sfx : sfx);
+    if (c.rev) { const s = ac.createGain(); s.gain.value = c.rev; p.connect(s); s.connect(revIn); }
+    src.start(Math.max(0, c.t), c.offset || 0, len * (c.rate || 1) + 0.01);
+  };
+  for (const c of cues) at(c.t, () => (c.url ? playSample(c) : playSfx(ac, { out: sfx, rev: revIn, delay: delayIn }, c)));
 
   events.sort((x, y) => x[0] - y[0]);
   const WIN = 0.5, LEAD = 0.25;

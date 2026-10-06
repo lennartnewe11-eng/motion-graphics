@@ -1,0 +1,233 @@
+{
+ "brush": [
+  "brush_1.ogg",
+  "brush_2.ogg",
+  "brush_3.ogg",
+  "brush_4.ogg",
+  "brush_5.ogg",
+  "brush_6.ogg",
+  "brush_7.ogg",
+  "brush_8.ogg",
+  "brush_9.ogg",
+  "brush_10.ogg",
+  "brush_11.ogg",
+  "brush_12.ogg"
+ ],
+ "burst": [
+  "burst.ogg"
+ ],
+ "calendar": [
+  "calendar_1.ogg",
+  "calendar_2.ogg",
+  "calendar_3.ogg",
+  "calendar_4.ogg",
+  "calendar_5.ogg",
+  "calendar_6.ogg"
+ ],
+ "clank": [
+  "clank_1.ogg",
+  "clank_2.ogg",
+  "clank_3.ogg",
+  "clank_4.ogg",
+  "clank_5.ogg"
+ ],
+ "clock_wind": [
+  "clock_wind.ogg"
+ ],
+ "crowd": [
+  "crowd.ogg"
+ ],
+ "drip": [
+  "drip_1.ogg",
+  "drip_2.ogg",
+  "drip_3.ogg",
+  "drip_4.ogg",
+  "drip_5.ogg",
+  "drip_6.ogg"
+ ],
+ "el_train": [
+  "el_train.ogg"
+ ],
+ "flash": [
+  "flash.ogg"
+ ],
+ "girder": [
+  "girder.ogg"
+ ],
+ "gloop": [
+  "gloop_1.ogg",
+  "gloop_2.ogg",
+  "gloop_3.ogg",
+  "gloop_4.ogg",
+  "gloop_5.ogg",
+  "gloop_6.ogg",
+  "gloop_7.ogg",
+  "gloop_8.ogg"
+ ],
+ "groan": [
+  "groan.ogg"
+ ],
+ "harbor": [
+  "harbor.ogg"
+ ],
+ "heart": [
+  "heart.ogg"
+ ],
+ "highlighter": [
+  "highlighter_1.ogg",
+  "highlighter_2.ogg",
+  "highlighter_3.ogg",
+  "highlighter_4.ogg",
+  "highlighter_5.ogg",
+  "highlighter_6.ogg",
+  "highlighter_7.ogg",
+  "highlighter_8.ogg"
+ ],
+ "houses": [
+  "houses.ogg"
+ ],
+ "lewis": [
+  "lewis.ogg"
+ ],
+ "marker": [
+  "marker_1.ogg",
+  "marker_2.ogg",
+  "marker_3.ogg",
+  "marker_4.ogg",
+  "marker_5.ogg",
+  "marker_6.ogg"
+ ],
+ "matches": [
+  "matches_1.ogg",
+  "matches_2.ogg",
+  "matches_3.ogg",
+  "matches_4.ogg",
+  "matches_5.ogg",
+  "matches_6.ogg",
+  "matches_7.ogg"
+ ],
+ "newspaper": [
+  "newspaper_1.ogg",
+  "newspaper_2.ogg",
+  "newspaper_3.ogg",
+  "newspaper_4.ogg",
+  "newspaper_5.ogg"
+ ],
+ "paper_crumple": [
+  "paper_crumple_1.ogg",
+  "paper_crumple_2.ogg",
+  "paper_crumple_3.ogg",
+  "paper_crumple_4.ogg",
+  "paper_crumple_5.ogg",
+  "paper_crumple_6.ogg",
+  "paper_crumple_7.ogg",
+  "paper_crumple_8.ogg",
+  "paper_crumple_9.ogg",
+  "paper_crumple_10.ogg",
+  "paper_crumple_11.ogg",
+  "paper_crumple_12.ogg"
+ ],
+ "paper_slide": [
+  "paper_slide_1.ogg",
+  "paper_slide_2.ogg",
+  "paper_slide_3.ogg",
+  "paper_slide_4.ogg",
+  "paper_slide_5.ogg",
+  "paper_slide_6.ogg"
+ ],
+ "paper_tear": [
+  "paper_tear_1.ogg",
+  "paper_tear_2.ogg",
+  "paper_tear_3.ogg",
+  "paper_tear_4.ogg",
+  "paper_tear_5.ogg",
+  "paper_tear_6.ogg"
+ ],
+ "paper_toss": [
+  "paper_toss_1.ogg",
+  "paper_toss_2.ogg",
+  "paper_toss_3.ogg",
+  "paper_toss_4.ogg",
+  "paper_toss_5.ogg",
+  "paper_toss_6.ogg",
+  "paper_toss_7.ogg"
+ ],
+ "pour": [
+  "pour.ogg"
+ ],
+ "rivet": [
+  "rivet_1.ogg",
+  "rivet_2.ogg",
+  "rivet_3.ogg",
+  "rivet_4.ogg",
+  "rivet_5.ogg",
+  "rivet_6.ogg",
+  "rivet_7.ogg"
+ ],
+ "sniff": [
+  "sniff.ogg"
+ ],
+ "stamp": [
+  "stamp_1.ogg",
+  "stamp_2.ogg",
+  "stamp_3.ogg",
+  "stamp_4.ogg",
+  "stamp_5.ogg",
+  "stamp_6.ogg",
+  "stamp_7.ogg",
+  "stamp_8.ogg"
+ ],
+ "street": [
+  "street.ogg"
+ ],
+ "stuck": [
+  "stuck.ogg"
+ ],
+ "summer": [
+  "summer.ogg"
+ ],
+ "tick": [
+  "tick_1.ogg",
+  "tick_2.ogg",
+  "tick_3.ogg",
+  "tick_4.ogg",
+  "tick_5.ogg",
+  "tick_6.ogg",
+  "tick_7.ogg",
+  "tick_8.ogg",
+  "tick_9.ogg",
+  "tick_10.ogg",
+  "tick_11.ogg",
+  "tick_12.ogg",
+  "tick_13.ogg",
+  "tick_14.ogg",
+  "tick_15.ogg",
+  "tick_16.ogg",
+  "tick_17.ogg",
+  "tick_18.ogg",
+  "tick_19.ogg",
+  "tick_20.ogg",
+  "tick_21.ogg",
+  "tick_22.ogg",
+  "tick_23.ogg",
+  "tick_24.ogg",
+  "tick_25.ogg",
+  "tick_26.ogg",
+  "tick_27.ogg"
+ ],
+ "typewriter": [
+  "typewriter_1.ogg",
+  "typewriter_2.ogg",
+  "typewriter_3.ogg",
+  "typewriter_4.ogg",
+  "typewriter_5.ogg",
+  "typewriter_6.ogg",
+  "typewriter_7.ogg"
+ ],
+ "wave": [
+  "wave.ogg"
+ ],
+ "wind": [
+  "wind.ogg"
+ ]
+}
