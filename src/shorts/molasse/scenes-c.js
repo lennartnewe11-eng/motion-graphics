@@ -359,6 +359,7 @@ function harbor(ctx, t) {
 // ============================================================== 18 · SMELL
 // Decades later, on hot days: heat shimmer over the same street, smell lines rising from the
 // cobblestones … then one word, in syrup. The last frame hands over to the first (loop).
+let SHIM = null;
 function smell(ctx, t) {
   const w = (i) => W_('m17', i);
   const u = t - CUT.smell;
@@ -388,12 +389,15 @@ function smell(ctx, t) {
   const ts = t - w(4);
   ctx.save();
   camera(ctx, t, { z: lerp(1.08, 1.16, clamp(ts / 4)) }, 0.6, 35);
+  // draw the street once into a buffer, then shift horizontal slices of it (cheap shimmer)
+  if (!SHIM) { SHIM = document.createElement('canvas'); SHIM.width = SW + 120; SHIM.height = SH + 80; }
+  const sc = SHIM.getContext('2d');
+  sc.setTransform(1, 0, 0, 1, 60, 40);
+  street(sc, t, { x: 0.5 });
   const sliceH = 32;
   for (let y = -40; y < SH + 40; y += sliceH) {
     const off = noise3(y * 0.012, t * 1.6, 7) * (y > 1000 ? 7 : 2.5);
-    ctx.save(); ctx.beginPath(); ctx.rect(-60, y, SW + 120, sliceH + 1); ctx.clip();
-    street(ctx, t, { x: 0.5, dx: off });
-    ctx.restore();
+    ctx.drawImage(SHIM, 0, y + 40, SW + 120, sliceH + 1, -60 + off, y, SW + 120, sliceH + 1);
   }
   ctx.fillStyle = 'rgba(255,248,230,0.18)'; ctx.fillRect(-100, -100, SW + 200, SH + 200);
   // smell lines rising from the gaps between the cobblestones (hand-drawn, boiling)
