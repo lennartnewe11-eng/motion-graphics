@@ -5,6 +5,7 @@
 //   node scripts/analog.mjs                                   out/assecor-master.mp4 -> renders/assecor-imagefilm.mp4
 //   node scripts/analog.mjs --in a.mp4 --out b.mp4
 //   node scripts/analog.mjs --stills out/stills --out out/analog-stills   (single frames, for look development)
+//   --strength 0..1   how much CRT (default 0.3 = light; 1 = full reference look)
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -31,27 +32,35 @@ async function makeGrille() {
     `format=rgb24,geq=r='${col([255, 150, 150])}*(1-0.18*eq(mod(X,6),5))':g='${col([150, 255, 150])}*(1-0.18*eq(mod(X,6),5))':b='${col([150, 150, 255])}*(1-0.18*eq(mod(X,6),5))',gblur=sigma=0.5:sigmaV=0`, GRILLE]);
 }
 
-// the look, as one filtergraph: [0]=picture, [1]=grille
-const LOOK = [
-  '[0:v]format=gbrp,split=3[a][b][c]',
-  // halation: wide, soft bloom of the highlights, screen-blended
-  '[b]scale=384:216:flags=bilinear,gblur=sigma=5,scale=1920:1080:flags=bicubic,curves=all=\'0/0 0.55/0.25 1/1\',format=gbrp[glow]',
-  // horizontal colour bleed (CRT / composite smear), mostly in chroma
-  '[c]scale=640:1080:flags=bilinear,scale=1920:1080:flags=bicubic,format=gbrp[smear]',
-  '[a]gblur=sigma=1.1,format=gbrp[soft]',
-  '[soft][smear]blend=all_mode=normal:all_opacity=0.35,format=gbrp[s1]',
-  '[s1][glow]blend=all_mode=screen:all_opacity=0.5[s2]',
-  '[s2]format=gbrp,rgbashift=rh=-4:bh=4:gh=0:edge=smear[ca]',
-  '[ca]eq=contrast=1.06:saturation=1.42:gamma=1.06:eval=frame:brightness=\'0.012*sin(n*2.3)+0.008*sin(n*0.71)\',format=gbrp[eq]',
-  '[1:v]format=gbrp[gr]',
-  '[eq][gr]blend=all_mode=multiply:all_opacity=0.36,format=gbrp,colorchannelmixer=rr=1.2:gg=1.2:bb=1.2[grille]',
-  // tube: lifted blacks, rolled-off whites, curvature, vignette
-  '[grille]curves=all=\'0/0.035 0.5/0.52 1/0.975\',lenscorrection=k1=0.03:k2=0.012:i=bilinear,scale=1998:1124,crop=1920:1080,vignette=angle=PI/5:mode=forward,noise=alls=7:allf=t+u[tube]',
-  // phosphor persistence
-  '[tube]tmix=frames=3:weights=\'1 0.45 0.18\',format=yuv420p[out]',
-].join(';');
-
-const STILL_LOOK = LOOK.replace(",tmix=frames=3:weights='1 0.45 0.18'", '');
+// the look, as one filtergraph: [0]=picture, [1]=grille.
+// k = strength 0..1 (1 = full CRT, as in the reference; the film uses a light touch by default)
+const K = Number(opt('strength', 0.3));
+function look(k, still = false) {
+  const f = (x, d = 3) => Number(x.toFixed(d));
+  const op = 0.36 * k;
+  const sw = Math.round((1920 * (1 + 0.04 * k)) / 2) * 2, sh = Math.round((1080 * (1 + 0.04 * k)) / 2) * 2;
+  const shift = Math.max(1, Math.round(4 * k));
+  return [
+    '[0:v]format=gbrp,split=3[a][b][c]',
+    // halation: wide, soft bloom of the highlights, screen-blended
+    "[b]scale=384:216:flags=bilinear,gblur=sigma=5,scale=1920:1080:flags=bicubic,curves=all='0/0 0.55/0.25 1/1',format=gbrp[glow]",
+    // horizontal colour bleed (CRT / composite smear)
+    '[c]scale=640:1080:flags=bilinear,scale=1920:1080:flags=bicubic,format=gbrp[smear]',
+    `[a]gblur=sigma=${f(0.3 + 0.8 * k)},format=gbrp[soft]`,
+    `[soft][smear]blend=all_mode=normal:all_opacity=${f(0.35 * k)},format=gbrp[s1]`,
+    `[s1][glow]blend=all_mode=screen:all_opacity=${f(0.5 * k)}[s2]`,
+    `[s2]format=gbrp,rgbashift=rh=-${shift}:bh=${shift}:gh=0:edge=smear[ca]`,
+    `[ca]eq=contrast=${f(1 + 0.06 * k)}:saturation=${f(1 + 0.42 * k)}:gamma=${f(1 + 0.06 * k)}:eval=frame:brightness='${f(0.012 * k, 4)}*sin(n*2.3)+${f(0.008 * k, 4)}*sin(n*0.71)',format=gbrp[eq]`,
+    '[1:v]format=gbrp[gr]',
+    `[eq][gr]blend=all_mode=multiply:all_opacity=${f(op)},format=gbrp,colorchannelmixer=rr=${f(1 + 0.55 * op)}:gg=${f(1 + 0.55 * op)}:bb=${f(1 + 0.55 * op)}[grille]`,
+    // tube: lifted blacks, rolled-off whites, curvature, vignette, noise
+    `[grille]curves=all='0/${f(0.035 * k)} 0.5/${f(0.5 + 0.02 * k)} 1/${f(1 - 0.025 * k)}',lenscorrection=k1=${f(0.03 * k, 4)}:k2=${f(0.012 * k, 4)}:i=bilinear,scale=${sw}:${sh},crop=1920:1080,vignette=angle=${f((Math.PI / 5) * Math.sqrt(k))}:mode=forward,noise=alls=${Math.max(1, Math.round(7 * k))}:allf=t+u[tube]`,
+    // phosphor persistence
+    still ? '[tube]format=rgb24[out]' : `[tube]tmix=frames=3:weights='1 ${f(0.45 * k)} ${f(0.18 * k)}',format=yuv420p[out]`,
+  ].join(';');
+}
+const LOOK = look(K);
+const STILL_LOOK = look(K, true);
 
 if (opt('stills')) {
   await makeGrille();
@@ -59,7 +68,7 @@ if (opt('stills')) {
   const out = path.resolve(ROOT, opt('out', 'out/analog-stills'));
   fs.mkdirSync(out, { recursive: true });
   for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.png'))) {
-    await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', path.join(dir, f), '-loop', '1', '-i', GRILLE, '-filter_complex', STILL_LOOK.replace('format=yuv420p[out]', 'format=rgb24[out]'), '-map', '[out]', '-frames:v', '1', path.join(out, f)]);
+    await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', path.join(dir, f), '-loop', '1', '-i', GRILLE, '-filter_complex', STILL_LOOK, '-map', '[out]', '-frames:v', '1', path.join(out, f)]);
     console.log('look →', path.join(path.relative(ROOT, out), f));
   }
 } else {
