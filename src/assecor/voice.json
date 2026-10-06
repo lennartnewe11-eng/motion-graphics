@@ -1,0 +1,511 @@
+[
+ {
+  "id": "a01",
+  "text": "Digitalisierung verändert die Welt.",
+  "dur": 2.415,
+  "words": [
+   {
+    "w": "Digitalisierung",
+    "s": 0,
+    "e": 0.998
+   },
+   {
+    "w": "verändert",
+    "s": 1.057,
+    "e": 1.474
+   },
+   {
+    "w": "die",
+    "s": 1.498,
+    "e": 1.591
+   },
+   {
+    "w": "Welt.",
+    "s": 1.637,
+    "e": 2.415
+   }
+  ]
+ },
+ {
+  "id": "a02",
+  "text": "Aber nicht jede Technologie verändert Ihr Geschäft.",
+  "dur": 3.529,
+  "words": [
+   {
+    "w": "Aber",
+    "s": 0,
+    "e": 0.279
+   },
+   {
+    "w": "nicht",
+    "s": 0.337,
+    "e": 0.604
+   },
+   {
+    "w": "jede",
+    "s": 0.697,
+    "e": 0.987
+   },
+   {
+    "w": "Technologie",
+    "s": 1.045,
+    "e": 1.707
+   },
+   {
+    "w": "verändert",
+    "s": 1.788,
+    "e": 2.218
+   },
+   {
+    "w": "Ihr",
+    "s": 2.287,
+    "e": 2.38
+   },
+   {
+    "w": "Geschäft.",
+    "s": 2.415,
+    "e": 3.529
+   }
+  ]
+ },
+ {
+  "id": "a03",
+  "text": "Deshalb fragen wir zuerst: Was bringt echten Mehrwert?",
+  "dur": 3.808,
+  "words": [
+   {
+    "w": "Deshalb",
+    "s": 0,
+    "e": 0.372
+   },
+   {
+    "w": "fragen",
+    "s": 0.395,
+    "e": 0.697
+   },
+   {
+    "w": "wir",
+    "s": 0.72,
+    "e": 0.836
+   },
+   {
+    "w": "zuerst:",
+    "s": 0.882,
+    "e": 1.521
+   },
+   {
+    "w": "Was",
+    "s": 1.672,
+    "e": 1.904
+   },
+   {
+    "w": "bringt",
+    "s": 1.985,
+    "e": 2.241
+   },
+   {
+    "w": "echten",
+    "s": 2.31,
+    "e": 2.635
+   },
+   {
+    "w": "Mehrwert?",
+    "s": 2.682,
+    "e": 3.808
+   }
+  ]
+ },
+ {
+  "id": "a04",
+  "text": "KI, die Prozesse automatisiert und Kosten senkt.",
+  "dur": 3.994,
+  "words": [
+   {
+    "w": "KI,",
+    "s": 0,
+    "e": 0.592
+   },
+   {
+    "w": "die",
+    "s": 0.662,
+    "e": 0.778
+   },
+   {
+    "w": "Prozesse",
+    "s": 0.824,
+    "e": 1.347
+   },
+   {
+    "w": "automatisiert",
+    "s": 1.405,
+    "e": 2.299
+   },
+   {
+    "w": "und",
+    "s": 2.38,
+    "e": 2.496
+   },
+   {
+    "w": "Kosten",
+    "s": 2.566,
+    "e": 2.949
+   },
+   {
+    "w": "senkt.",
+    "s": 3.007,
+    "e": 3.994
+   }
+  ]
+ },
+ {
+  "id": "a05",
+  "text": "Software, die skaliert, stabil läuft und mitwächst.",
+  "dur": 3.762,
+  "words": [
+   {
+    "w": "Software,",
+    "s": 0,
+    "e": 0.72
+   },
+   {
+    "w": "die",
+    "s": 0.755,
+    "e": 0.882
+   },
+   {
+    "w": "skaliert,",
+    "s": 0.929,
+    "e": 1.567
+   },
+   {
+    "w": "stabil",
+    "s": 1.614,
+    "e": 2.055
+   },
+   {
+    "w": "läuft",
+    "s": 2.136,
+    "e": 2.473
+   },
+   {
+    "w": "und",
+    "s": 2.531,
+    "e": 2.647
+   },
+   {
+    "w": "mitwächst.",
+    "s": 2.728,
+    "e": 3.762
+   }
+  ]
+ },
+ {
+  "id": "a06",
+  "text": "Und Transformation, die Ihre Teams mitnimmt.",
+  "dur": 3.111,
+  "words": [
+   {
+    "w": "Und",
+    "s": 0,
+    "e": 0.232
+   },
+   {
+    "w": "Transformation,",
+    "s": 0.313,
+    "e": 1.207
+   },
+   {
+    "w": "die",
+    "s": 1.254,
+    "e": 1.37
+   },
+   {
+    "w": "Ihre",
+    "s": 1.428,
+    "e": 1.625
+   },
+   {
+    "w": "Teams",
+    "s": 1.683,
+    "e": 1.985
+   },
+   {
+    "w": "mitnimmt.",
+    "s": 2.043,
+    "e": 3.111
+   }
+  ]
+ },
+ {
+  "id": "a07",
+  "text": "Von der Idee bis zur Umsetzung. Alles aus einer Hand.",
+  "dur": 4.412,
+  "words": [
+   {
+    "w": "Von",
+    "s": 0,
+    "e": 0.244
+   },
+   {
+    "w": "der",
+    "s": 0.29,
+    "e": 0.418
+   },
+   {
+    "w": "Idee",
+    "s": 0.488,
+    "e": 0.952
+   },
+   {
+    "w": "bis",
+    "s": 1.045,
+    "e": 1.265
+   },
+   {
+    "w": "zur",
+    "s": 1.335,
+    "e": 1.486
+   },
+   {
+    "w": "Umsetzung.",
+    "s": 1.533,
+    "e": 2.31
+   },
+   {
+    "w": "Alles",
+    "s": 2.635,
+    "e": 3.03
+   },
+   {
+    "w": "aus",
+    "s": 3.146,
+    "e": 3.309
+   },
+   {
+    "w": "einer",
+    "s": 3.39,
+    "e": 3.634
+   },
+   {
+    "w": "Hand.",
+    "s": 3.692,
+    "e": 4.412
+   }
+  ]
+ },
+ {
+  "id": "a08",
+  "text": "Seit über zwanzig Jahren. Mehr als zweihundertfünfzig Projekte. Über hundertzwanzig Expertinnen und Experten.",
+  "dur": 8.313,
+  "words": [
+   {
+    "w": "Seit",
+    "s": 0,
+    "e": 0.267
+   },
+   {
+    "w": "über",
+    "s": 0.348,
+    "e": 0.569
+   },
+   {
+    "w": "zwanzig",
+    "s": 0.627,
+    "e": 1.08
+   },
+   {
+    "w": "Jahren.",
+    "s": 1.103,
+    "e": 1.614
+   },
+   {
+    "w": "Mehr",
+    "s": 1.997,
+    "e": 2.299
+   },
+   {
+    "w": "als",
+    "s": 2.368,
+    "e": 2.589
+   },
+   {
+    "w": "zweihundertfünfzig",
+    "s": 2.635,
+    "e": 3.762
+   },
+   {
+    "w": "Projekte.",
+    "s": 3.796,
+    "e": 4.47
+   },
+   {
+    "w": "Über",
+    "s": 4.911,
+    "e": 5.213
+   },
+   {
+    "w": "hundertzwanzig",
+    "s": 5.259,
+    "e": 5.979
+   },
+   {
+    "w": "Expertinnen",
+    "s": 6.026,
+    "e": 6.664
+   },
+   {
+    "w": "und",
+    "s": 6.757,
+    "e": 6.885
+   },
+   {
+    "w": "Experten.",
+    "s": 6.954,
+    "e": 8.313
+   }
+  ]
+ },
+ {
+  "id": "a09",
+  "text": "Für den Mittelstand und für Großunternehmen.",
+  "dur": 2.554,
+  "words": [
+   {
+    "w": "Für",
+    "s": 0,
+    "e": 0.221
+   },
+   {
+    "w": "den",
+    "s": 0.244,
+    "e": 0.337
+   },
+   {
+    "w": "Mittelstand",
+    "s": 0.372,
+    "e": 0.906
+   },
+   {
+    "w": "und",
+    "s": 0.975,
+    "e": 1.057
+   },
+   {
+    "w": "für",
+    "s": 1.103,
+    "e": 1.207
+   },
+   {
+    "w": "Großunternehmen.",
+    "s": 1.242,
+    "e": 2.554
+   }
+  ]
+ },
+ {
+  "id": "a10",
+  "text": "Skalierbar. Wirtschaftlich. Verantwortungsvoll.",
+  "dur": 4.644,
+  "words": [
+   {
+    "w": "Skalierbar.",
+    "s": 0,
+    "e": 1.057
+   },
+   {
+    "w": "Wirtschaftlich.",
+    "s": 1.498,
+    "e": 2.473
+   },
+   {
+    "w": "Verantwortungsvoll.",
+    "s": 2.914,
+    "e": 4.644
+   }
+  ]
+ },
+ {
+  "id": "a11",
+  "text": "Wir bringen Technologie dorthin, wo sie Wirkung entfaltet.",
+  "dur": 3.344,
+  "words": [
+   {
+    "w": "Wir",
+    "s": 0,
+    "e": 0.221
+   },
+   {
+    "w": "bringen",
+    "s": 0.255,
+    "e": 0.557
+   },
+   {
+    "w": "Technologie",
+    "s": 0.615,
+    "e": 1.196
+   },
+   {
+    "w": "dorthin,",
+    "s": 1.219,
+    "e": 1.637
+   },
+   {
+    "w": "wo",
+    "s": 1.66,
+    "e": 1.788
+   },
+   {
+    "w": "sie",
+    "s": 1.834,
+    "e": 1.939
+   },
+   {
+    "w": "Wirkung",
+    "s": 1.985,
+    "e": 2.322
+   },
+   {
+    "w": "entfaltet.",
+    "s": 2.38,
+    "e": 3.344
+   }
+  ]
+ },
+ {
+  "id": "a12",
+  "text": "Assecor. Lassen Sie uns gemeinsam starten.",
+  "dur": 3.297,
+  "words": [
+   {
+    "w": "Assecor.",
+    "s": 0,
+    "e": 0.743
+   },
+   {
+    "w": "Lassen",
+    "s": 1.126,
+    "e": 1.463
+   },
+   {
+    "w": "Sie",
+    "s": 1.498,
+    "e": 1.614
+   },
+   {
+    "w": "uns",
+    "s": 1.672,
+    "e": 1.823
+   },
+   {
+    "w": "gemeinsam",
+    "s": 1.881,
+    "e": 2.415
+   },
+   {
+    "w": "starten.",
+    "s": 2.473,
+    "e": 3.297
+   }
+  ]
+ }
+]

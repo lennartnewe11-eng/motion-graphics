@@ -1,3 +1,64 @@
+# Motion Design
+
+# Assecor — Imagefilm
+
+▶ **Video:** [`renders/assecor-imagefilm.mp4`](renders/assecor-imagefilm.mp4) — 64 s, 1920×1080, 25 fps, Stereo, analoger CRT-Look.
+
+Ein Imagefilm, der die Leistungen der [Assecor GmbH](https://www.assecor.de) erklärt: KI-Beratung & -Integration,
+Softwareentwicklung & -modernisierung, digitale Transformation — von der Idee bis zur Umsetzung, aus einer Hand.
+
+**Storytelling** nach der Referenz „storytelling referenz Video“: Wort-für-Wort-Typografie synchron zur Stimme,
+harte Schnitte auf gesprochene Wörter, Wechsel zwischen spannender Typo (Merriweather + Roboto, riesige Condensed-Wörter),
+echten Fotos (S/W wie auf assecor.de, Polaroids mit Reißkante, Foto in Buchstaben, Mosaik), Icons und einer
+handgezeichneten Ebene (Marker-Kreise, Pfeile, Durchstreichungen, Handschrift, Strichzeichnungen mit „Boil“).
+
+**Visuelle Sprache von assecor.de:** Navy `#071225`, Mint `#00CDA5`, Blau `#5564D7`, Koralle `#FF6464`, Gelb `#FFFF58`
+und ihre hellen Töne; die Pixel-Block-Icons der drei Leistungen (Block für Block animiert, Original-Vektoren),
+die weißen Linien-Icons (Chip, Würfel, Handschlag …, als Draw-on), die Stage-Blöcke des Website-Heros, das Logo
+(Buchstabe für Buchstabe maskiert) und der Website-Claim „Wir bringen Technologie dorthin, wo sie Wirkung entfaltet.“
+
+**Analoger Look** nach „analog filter referenz Video“ (`scripts/analog.mjs`, ffmpeg): Aperture-Grille-Phosphorstreifen,
+Halation/Bloom, Soft-Focus, horizontaler Farb-Smear und RGB-Versatz, Röhrenwölbung, Vignette, angehobene Schwarzwerte,
+Flackern, Rauschen und Phosphor-Nachleuchten; dazu Staub/Haare und CRT-Ein-/Ausschalten im Bild.
+
+**Ton:** Stimme ElevenLabs (`SiMvlSW9cKKHDYT4BzOp`, „Lola“, mit Wort-Zeitstempeln), Musik ElevenLabs Music
+(`music_v2_5`, Composition Plan: Intro → Groove → Build → Drop → Outro, 120 BPM — jeder Schnitt sitzt im Beat-Raster),
+17 Foley-Sounds per ElevenLabs Sound Effects (Papier reißen, Marker, Stempel, Polaroid, CRT …) plus synthetisierte
+UI-Sounds aus dem Web-Audio-Kit; Musik duckt unter der Stimme, Master auf −14 LUFS.
+
+| Zeit | Inhalt |
+|------|--------|
+| 0:00 | CRT schaltet ein, ein Pixel blinkt („Bereit?“), zerfällt in Blöcke → „Digitalisierung“ |
+| 0:04 | „die WELT“ — Luftbild in riesigen Buchstaben, Orbit-Linie |
+| 0:05 | „Aber / nicht / jede Technologie“ — Icon-Orbit, „jede“ wird durchgestrichen |
+| 0:08 | Kick setzt ein: „Ihr Geschäft.“ — Foto-Slam |
+| 0:09 | „Deshalb fragen wir zuerst: Was bringt echten Mehrwert?“ — Pfeile, Marker, Kreis |
+| 0:13 | Die drei Leistungs-Icons bauen sich auf, Zoom in das KI-Icon |
+| 0:16 | KI — Prozesse automatisieren (Serverraum + Prozess-Skizze), Kosten senken (Chart) |
+| 0:20 | Software — skaliert, läuft stabil (Assecor-Foto + Status-Chip), wächst mit |
+| 0:24 | Transformation — Teams (Marker-Kreise um Köpfe), mitnehmen |
+| 0:27 | Kamerafahrt über ein Skizzenblatt: Idee → Strategie → Entwicklung → „UMGESETZT“ |
+| 0:30 | „Alles aus einer Hand.“ — Handschlag-Icon zeichnet sich |
+| 0:32 | 20+ Jahre (Zählwerk), 250+ Projekte (250 Blöcke), 120+ Expert:innen (Fotomosaik) |
+| 0:41 | Mittelstand & Großunternehmen (Strichzeichnung), Standorte, Kund:innen im Achtel-Takt |
+| 0:48 | Drop: „Skalierbar. Wirtschaftlich. Verantwortungsvoll.“ |
+| 0:53 | Claim im Website-Hero-Layout, Blöcke „entfalten“ sich auf dem Schlusshit |
+| 0:57 | Logo, „Lassen Sie uns gemeinsam starten.“, assecor.de, CRT schaltet aus |
+
+```bash
+ELEVENLABS_API_KEY=… node scripts/voice.mjs --film assecor   # Stimme -> assets/assecor/vo + src/assecor/voice.json
+ELEVENLABS_API_KEY=… node scripts/music-assecor.mjs           # Score  -> assets/assecor/music/score.mp3
+ELEVENLABS_API_KEY=… node scripts/sfx-assecor.mjs             # Foley  -> assets/assecor/sfx/*.mp3
+node scripts/render.mjs --film assecor                        # sauberer Master -> out/assecor-master.mp4
+node scripts/analog.mjs                                       # CRT-Look -> renders/assecor-imagefilm.mp4
+npm run preview  # dann /src/index.html?preview&film=assecor
+```
+
+Fotos: S/W-Bearbeitungen von Pexels-Fotos (Pexels-Lizenz) und Bildern von assecor.de. Code: `src/assecor/`
+(`timeline.js` Schnittraster, `lib.js` Design-System, `scenes-a…d.js` Szenen, `brand-data.js` Logo/Icon-Vektoren).
+
+---
+
 # Claude — Motion Design
 
 Zwei Filme, komplett aus Code gebaut:

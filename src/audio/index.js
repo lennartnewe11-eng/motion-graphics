@@ -4,7 +4,21 @@ import { scheduleScore } from './score.js';
 
 export const SAMPLE_RATE = 48000;
 
-export async function renderMix(cues, duration, { solo = null, score = scheduleScore, voice = [] } = {}) {
+// Decode a file once per render and normalise its peak (samples come from different generators).
+async function loadBuffer(ac, url, peak = 0) {
+  const buf = await ac.decodeAudioData(await (await fetch(url)).arrayBuffer());
+  if (peak) {
+    let m = 0;
+    for (let c = 0; c < buf.numberOfChannels; c++) { const d = buf.getChannelData(c); for (let i = 0; i < d.length; i++) m = Math.max(m, Math.abs(d[i])); }
+    const k = m > 0 ? peak / m : 1;
+    for (let c = 0; c < buf.numberOfChannels; c++) { const d = buf.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] *= k; }
+  }
+  return buf;
+}
+
+// music: pre-produced tracks [{ url, t, gain }] on the music bus (ducked under the voice by voiceDuck)
+// samples: base URL for sample cues ({ t, s: 'tear', gain, rate, pan, rev }) next to the synthesised ones
+export async function renderMix(cues, duration, { solo = null, score = scheduleScore, voice = [], music = [], samples = null, voiceDuck = 0.25, voiceGain = 2.4, sfxGain = 1.55 } = {}) {
   const ac = new OfflineAudioContext(2, Math.ceil(duration * SAMPLE_RATE), SAMPLE_RATE);
   initKit(ac);
   resetRandom();
@@ -56,7 +70,7 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
   const musicIn = ac.createGain(); musicIn.gain.value = 0.75;
   const duck = ac.createGain(); duck.gain.value = 1;
   musicIn.connect(duck); duck.connect(master);
-  const sfx = ac.createGain(); sfx.gain.value = 1.55; sfx.connect(master);
+  const sfx = ac.createGain(); sfx.gain.value = sfxGain; sfx.connect(master);
 
   // voice-over bus (ElevenLabs narration), with the rest of the mix ducking underneath
   const vduck = ac.createGain();
@@ -64,7 +78,7 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
   const dDuck = ac.createGain();
   drums.disconnect(); drums.connect(dDuck); dDuck.connect(master);
   if (voice.length) {
-    const vIn = ac.createGain(); vIn.gain.value = solo && solo !== 'voice' ? 0 : 2.4;
+    const vIn = ac.createGain(); vIn.gain.value = solo && solo !== 'voice' ? 0 : voiceGain;
     const vHp = ac.createBiquadFilter(); vHp.type = 'highpass'; vHp.frequency.value = 90;
     const vPres = ac.createBiquadFilter(); vPres.type = 'peaking'; vPres.frequency.value = 3200; vPres.gain.value = 2.5;
     const vComp = ac.createDynamicsCompressor();
@@ -78,7 +92,7 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
       src.connect(vIn);
       src.start(v.t);
       const end = v.t + bufs[i].duration;
-      for (const [g, depth] of [[vduck.gain, 0.25], [dDuck.gain, 0.5]]) {
+      for (const [g, depth] of [[vduck.gain, voiceDuck], [dDuck.gain, 0.5]]) {
         g.setTargetAtTime(depth, v.t - 0.1, 0.05);
         g.setTargetAtTime(1, end + 0.05, 0.25);
       }
@@ -90,7 +104,34 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
   // Nodes are created just-in-time in short windows (suspend/resume) so the live graph stays small.
   const events = [];
   const at = (t, fn) => events.push([t, fn]);
-  const kicks = score(ac, { drums, music: musicIn, rev: revIn, delay: delayIn, sfx }, at);
+  const kicks = score ? score(ac, { drums, music: musicIn, rev: revIn, delay: delayIn, sfx }, at) : [];
+
+  // pre-produced music tracks
+  for (const m of music) {
+    const buf = await loadBuffer(ac, m.url);
+    const src = ac.createBufferSource();
+    src.buffer = buf;
+    const g = ac.createGain(); g.gain.value = m.gain ?? 1;
+    src.connect(g); g.connect(musicIn);
+    src.start(m.t || 0, m.offset || 0);
+  }
+
+  // sample cues (foley): decoded once, peak-normalised, scheduled like the synth cues
+  const sampleCues = cues.filter((c) => c.s);
+  if (samples && sampleCues.length) {
+    const names = [...new Set(sampleCues.map((c) => c.s))];
+    const bufs = Object.fromEntries(await Promise.all(names.map(async (n) => [n, await loadBuffer(ac, `${samples}${n}.mp3`, 0.9)])));
+    for (const c of sampleCues) at(c.t, () => {
+      const src = ac.createBufferSource();
+      src.buffer = bufs[c.s];
+      src.playbackRate.value = c.rate || 1;
+      const g = ac.createGain(); g.gain.value = c.gain ?? 0.5;
+      const p = ac.createStereoPanner(); p.pan.value = c.pan || 0;
+      src.connect(g); g.connect(p); p.connect(sfx);
+      if (c.rev) { const r = ac.createGain(); r.gain.value = c.rev; p.connect(r); r.connect(revIn); }
+      src.start(Math.max(0, c.t), c.offset || 0);
+    });
+  }
 
   // sidechain: duck the music bus on every kick
   for (const t of kicks) {
@@ -99,7 +140,7 @@ export async function renderMix(cues, duration, { solo = null, score = scheduleS
     duck.gain.setTargetAtTime(1.0, t + 0.04, 0.075);
   }
 
-  for (const c of cues) at(c.t, () => playSfx(ac, { out: sfx, rev: revIn, delay: delayIn }, c));
+  for (const c of cues) if (!c.s) at(c.t, () => playSfx(ac, { out: sfx, rev: revIn, delay: delayIn }, c));
 
   events.sort((x, y) => x[0] - y[0]);
   const WIN = 0.5, LEAD = 0.25;

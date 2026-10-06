@@ -2,15 +2,19 @@
 import { W, H, clamp } from './engine/core.js';
 import { renderMix } from './audio/index.js';
 
-// Which film to load: ?film=reel (default) or ?film=flow
+// Which film to load: ?film=reel (default), ?film=flow, ?film=assecor
 const FILM = new URLSearchParams(location.search).get('film') || 'reel';
-const film = await import(FILM === 'flow' ? './flow/film.js' : './reel.js');
+const film = await import(FILM === 'reel' ? './reel.js' : `./${FILM}/film.js`);
 const { compose, init, blurSamples, FPS, DURATION, cueSheet } = film;
+const VO_DIR = FILM === 'flow' ? '/assets/vo' : `/assets/${FILM}/vo`;
 const mixOpts = (o = {}) => ({
   ...o,
   score: film.score,
-  voice: (film.voice || []).map((v) => ({ t: v.t, url: `/assets/vo/${v.id}.mp3` })),
+  ...(film.mix || {}),
+  voice: (film.voice || []).map((v) => ({ t: v.t, url: `${VO_DIR}/${v.id}.mp3` })),
 });
+// Per-film finishing: films that get an external analog pass switch the built-in grain/vignette off.
+const FINISH = { grain: 1, vignette: 1, ...(film.finish || {}) };
 
 const canvas = document.getElementById('stage');
 const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
@@ -21,6 +25,7 @@ const FONTS = [
   '400 40px "JetBrains Mono"', '500 40px "JetBrains Mono"', '700 40px "JetBrains Mono"', '800 40px "JetBrains Mono"',
   '800 40px Syne', 'italic 900 40px "Playfair Display"', '900 40px Unbounded', '400 40px "Bebas Neue"',
   '900 40px Fraunces', '700 40px "Space Grotesk"',
+  ...(film.fonts || []),
 ];
 
 let ready = null;
@@ -40,7 +45,7 @@ const vignette = new Float32Array(N_PIX);
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const dx = (x - W / 2) / (W / 2), dy = (y - H / 2) / (H / 2);
   const d = Math.sqrt(dx * dx * 0.8 + dy * dy * 0.9);
-  vignette[y * W + x] = 1 - 0.09 * Math.pow(clamp(d - 0.35, 0, 1) / 0.65, 2.2);
+  vignette[y * W + x] = 1 - FINISH.vignette * 0.09 * Math.pow(clamp(d - 0.35, 0, 1) / 0.65, 2.2);
 }
 // Pre-baked film grain tile (approximately gaussian, deterministic).
 const GT = 1024;
@@ -91,7 +96,7 @@ function toYUV(n, frame) {
       const r = acc[q] * v, g = acc[q + 1] * v, b = acc[q + 2] * v;
       const Y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
       const mid = 1 - Math.abs(Y / 127.5 - 1);
-      let yv = 16 + Y * 0.858824 + grain[gRow + ((x + ox) & (GT - 1))] * (1.1 + 1.6 * mid);
+      let yv = 16 + Y * 0.858824 + grain[gRow + ((x + ox) & (GT - 1))] * (1.1 + 1.6 * mid) * FINISH.grain;
       yv = yv < 16 ? 16 : yv > 235 ? 235 : yv;
       yuv[i] = yv + 0.5;
       const c = cRow + (x >> 1);

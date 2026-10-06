@@ -20,11 +20,12 @@ const opt = (name, def) => {
   return v === undefined || v.startsWith('--') ? true : v;
 };
 
-const FPS = Number(opt('fps', 60));
+let FPS = Number(opt('fps', 0)) || 60;
 const WORKERS = Number(opt('workers', Math.max(1, Math.min(4, os.cpus().length - 1))));
 const OUT_DIR = path.join(ROOT, 'out');
 const FILM = opt('film', 'reel');
-const FINAL = path.resolve(ROOT, opt('out', FILM === 'reel' ? 'renders/claude-motion-reel.mp4' : `renders/claude-${FILM}.mp4`));
+const DEFAULT_OUT = { reel: 'renders/claude-motion-reel.mp4', assecor: 'out/assecor-master.mp4' }[FILM] || `renders/claude-${FILM}.mp4`;
+const FINAL = path.resolve(ROOT, opt('out', DEFAULT_OUT));
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 const LAUNCH = { args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--ignore-gpu-blocklist', '--disable-background-timer-throttling', '--disable-renderer-backgrounding'] };
@@ -46,6 +47,7 @@ async function openPage(srv, tag) {
   page.on('pageerror', (e) => console.error(`[${tag}] PAGE ERROR`, e));
   await page.goto(`http://127.0.0.1:${srv.port}/src/index.html?film=${FILM}`);
   await page.waitForFunction(() => window.REEL);
+  if (!opt('fps')) FPS = await page.evaluate(() => window.REEL.FPS);
   return { browser, page };
 }
 
@@ -54,7 +56,7 @@ async function stills(srv, times) {
   fs.mkdirSync(dir, { recursive: true });
   const { browser, page } = await openPage(srv, 'still');
   for (const t of times) {
-    const url = await page.evaluate(([t, fps]) => window.REEL.still(t, fps, true), [t, FPS]);
+    const url = await page.evaluate(([t, fps, blur]) => window.REEL.still(t, fps, blur), [t, FPS, !opt('noblur')]);
     const file = path.join(dir, `t${t.toFixed(3).padStart(7, '0')}.png`);
     fs.writeFileSync(file, Buffer.from(url.split(',')[1], 'base64'));
     console.log('wrote', path.relative(ROOT, file));
