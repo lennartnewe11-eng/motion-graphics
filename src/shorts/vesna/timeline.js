@@ -9,43 +9,29 @@ export const E16 = BEAT / 4;
 export const snap8 = (t) => Math.ceil(t / E8 - 1e-6) * E8;
 export const snapB = (t) => Math.ceil(t / BEAT - 1e-6) * BEAT;
 
-// One continuous take (voice-lines.js: ONE_TAKE). Long breaths trimmed to SENT_GAP (in a line) / LINE_GAP (between
-// lines); EXTRA adds silence where the picture needs room: the impact before "Und sie hat überlebt", the downbeat
-// that starts the music, the explosion, the 27, the snow, the coma, the record.
-const SENT_GAP = 0.2, LINE_GAP = 0.24;
-const EXTRA = { v03: 0.6, v04: 0.3, v08: 0.15, v11: 0.1, v12: 0.15, v15: 0.15, v16: 0.2 };
-const KEEP = new Set([]);
-const EXTRA_WORD = { 'v09:5': 0.2, 'v16:8': 0.15 }; // "…Siebenundzwanzig", "Hätte ich…"
+// One continuous take (eleven_v4, evenly time-stretched — voice-lines.js). The performance is never cut
+// inside: its own breaths and melody stay. Silence is only *added* between lines where the picture needs room
+// (the impact before "Und sie hat überlebt", the music downbeat, the blast, the turn to her own words) —
+// and only at the quietest point between two lines (`cut`, found by scripts/voice.mjs).
+const EXTRA = { v03: 0.75, v04: 0.35, v08: 0.3, v16: 0.25 };
 const START = 0.45; // the plane is already falling before the first word
 
 export const LINES = [];
 export const SEGMENTS = [];
 {
-  let out = START, prevE = null, seg = null;
+  let off = START, from = 0;
   for (const l of VOICE) {
-    const words = [];
-    l.words.forEach((w, i) => {
-      const s = l.take + w.s, e = l.take + w.e;
-      if (prevE === null) { seg = { from: s - 0.05, at: out - 0.05 }; }
-      else {
-        const gap = s - prevE;
-        const keep = KEEP.has(`${l.id}:${i}`);
-        const allowed = (keep ? gap : Math.min(gap, i === 0 ? LINE_GAP : SENT_GAP) + (i === 0 ? EXTRA[l.id] || 0 : 0)) + (EXTRA_WORD[`${l.id}:${i}`] || 0);
-        if (Math.abs(allowed - gap) > 0.005) {
-          const tail = Math.min(gap / 2, 0.08), head = Math.min(gap / 2, 0.06);
-          SEGMENTS.push({ ...seg, to: prevE + tail });
-          seg = { from: s - head, at: out + allowed - head };
-        }
-        out += allowed;
-      }
-      words.push({ w: w.w, s: out, e: out + (e - s) });
-      out += e - s;
-      prevE = e;
-    });
-    const t0 = words[0].s;
-    LINES.push({ ...l, t: t0, end: words[words.length - 1].e, words: words.map((w) => ({ w: w.w, s: w.s - t0, e: w.e - t0 })) });
+    const e = EXTRA[l.id] || 0;
+    if (e > 0) {
+      SEGMENTS.push({ from, to: l.cut, at: from + off });
+      off += e;
+      from = l.cut;
+    }
+    const t0 = l.take + l.words[0].s + off;
+    LINES.push({ ...l, t: t0, end: l.take + l.words[l.words.length - 1].e + off, words: l.words.map((w) => ({ w: w.w, s: l.take + w.s + off - t0, e: l.take + w.e + off - t0 })) });
   }
-  SEGMENTS.push({ ...seg, to: prevE + 0.4 });
+  const last = VOICE[VOICE.length - 1];
+  SEGMENTS.push({ from, to: last.take + last.dur + 0.4, at: from + off });
 }
 export const L = Object.fromEntries(LINES.map((l) => [l.id, l]));
 export const W_ = (id, i) => L[id].t + L[id].words[i].s;

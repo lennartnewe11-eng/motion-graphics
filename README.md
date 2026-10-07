@@ -20,6 +20,7 @@ node scripts/render.mjs --film molasse --audio-only --solo sfx # Stem zur Mix-An
 **Vesna** (`renders/vesna.mp4`) — 61 s. 26. Januar 1972: Stewardess Vesna Vulović überlebt einen Sturz aus 10 160 m
 ohne Fallschirm. Nur aus echten Fotos geschnittene Elemente (NASA-DC-9, das Auslieferungsfoto von YU-AHT, Wolken 1931/1940,
 Highsmith-Schneewald, UPI-Fotos von ihr), kühles Monochrom auf Schwarz, Signalorange als einzige Farbe.
+Sprecher: ElevenLabs `eleven_v4` („Ben“), eine Aufnahme, gleichmäßig gestreckt statt geschnitten. **Dieser Stil ist der Hausstil der Reihe (`CLAUDE.md`).**
 
 ```bash
 python3 scripts/vesna_assets.py                               # Fotos -> Cut-outs/Plates (Quellen: .scratch/vesna)

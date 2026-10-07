@@ -410,6 +410,12 @@ Referenz 1 (Senioren-Collage) als Material, aber **in Bewegung wie ein Film**. T
 - Handschrift als zweite Stimme für Kontext („das Original“, „North End, 15.01.1919“, „gebaut 1915“, „echt jetzt?“).
 
 ### 8.2 Sound
+- **Aktueller Stand (ab Vesna v2): `eleven_v4`, Stimme „Ben – Effortless and Casual“** (`aTTiK3YzK3dXETpuDE2h`),
+  `language_code: 'de'`. v4 ignoriert `speed` → gleichmäßiger Rubberband-Time-Stretch der ganzen Aufnahme (`TEMPO`).
+  Feedback zur v2-Fassung: „Sprecher unflüssig“ → Ursache waren v2-Satzmelodie *und* das Kürzen der Atempausen.
+  Seitdem gilt: **keine Schnitte in der Performance**, Stille nur zwischen Zeilen am leisesten Punkt hinzufügen.
+  Auswahl per Hörproben-Messung: Ben hatte die kürzesten Pausen im Satz (max. 0,24 s) und fließende Satzübergänge.
+- *Historisch (Melasse, Vesna v1):*
 - Voice-over: ElevenLabs `eleven_multilingual_v2`, Stimme **Christian Plasa – Dynamic and Vibrant**
   (`nsFsExJHz4xV1sOX6Kdn`, für Shorts/Reels gemacht), stability 0.35 · style 0.45 · speed 1.2, **Zahlen ausgeschrieben**.
 - **Eine durchgehende Aufnahme** (`ONE_TAKE`), nie Zeile für Zeile: Einzelzeilen klingen abgehackt, weil jede ihre eigene
@@ -429,7 +435,9 @@ Referenz 1 (Senioren-Collage) als Material, aber **in Bewegung wie ein Film**. T
   (Segmente < 0,35 s Abstand zusammenfassen), sonst hebt das Release eines Segments das Ducking des nächsten auf.
 - **Stille als Ereignis:** vor der Explosion 2 Beats nur Herzschlag; vor „süß“ eine echte Pause.
 
-## 9. Variante „Nacht“ (Vesna Vulović, `src/shorts/vesna/`)
+## 9. Hausstil „Nacht“ (Vesna Vulović, `src/shorts/vesna/`) — Standard für alle weiteren Shorts
+
+Vom Nutzer bestätigt: „visuell extrem stark, halte den Stil so fest“. Kurzfassung für jede Sitzung: `CLAUDE.md`.
 
 Zweiter Film der Reihe, Feedback-Vorgaben: **nur echte, aus Fotos geschnittene Elemente**, wenig weißer Hintergrund,
 maximale Ästhetik, spannende Typografie, Hook = altes Flugzeug stürzt durch Wolken dem Boden entgegen.

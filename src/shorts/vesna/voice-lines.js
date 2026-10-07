@@ -1,9 +1,12 @@
 // Narration for "Vesna" (JAT Flight 367, 26 January 1972). One continuous take; numbers spelled out.
 // Facts: Wikipedia "Vesna Vulović" / "JAT Flight 367" — see assets/vesna/SOURCES.md.
-export const VOICE_ID = 'nsFsExJHz4xV1sOX6Kdn'; // "Christian Plasa – Dynamic and Vibrant"
-export const MODEL = 'eleven_multilingual_v2';
+export const VOICE_ID = 'aTTiK3YzK3dXETpuDE2h'; // "Ben – Effortless and Casual" (verified for eleven_v4, German)
+export const MODEL = 'eleven_v4';
+export const LANGUAGE = 'de';
+// v4 ignores `speed`; the take is time-stretched evenly afterwards (scripts/voice.mjs)
+export const TEMPO = 1.22;
 export const ONE_TAKE = true;
-export const SETTINGS = { stability: 0.35, similarity_boost: 0.8, style: 0.45, use_speaker_boost: true, speed: 1.2 };
+export const SETTINGS = { stability: 0.5, similarity_boost: 0.8 };
 export const LINES = [
   { id: 'v01', text: 'Diese Frau ist über zehntausend Meter tief gestürzt.' },
   { id: 'v02', text: 'Ohne Fallschirm.' },
