@@ -133,7 +133,7 @@ export function hand(ctx, text, x, y, t, t0, { size = 64, color = P.ink, dur = 0
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rot + noise3(Math.floor(t * 8), 3, 1) * 0.008);
-  const ox = align === 'center' ? -w / 2 : 0;
+  const ox = align === 'center' ? -w / 2 : align === 'right' ? -w : 0;
   ctx.beginPath();
   ctx.rect(ox - 10, -size * 1.2, (w + 20) * p, size * 1.8);
   ctx.clip();

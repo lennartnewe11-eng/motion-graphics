@@ -1,0 +1,134 @@
+{
+ "bh_drone": [
+  "bh_drone.ogg"
+ ],
+ "chalk": [
+  "chalk_1.ogg",
+  "chalk_2.ogg",
+  "chalk_3.ogg",
+  "chalk_4.ogg",
+  "chalk_5.ogg",
+  "chalk_6.ogg",
+  "chalk_7.ogg",
+  "chalk_8.ogg",
+  "chalk_9.ogg",
+  "chalk_10.ogg",
+  "chalk_11.ogg",
+  "chalk_12.ogg"
+ ],
+ "dissolve": [
+  "dissolve.ogg"
+ ],
+ "slurp": [
+  "slurp.ogg"
+ ],
+ "space": [
+  "space.ogg"
+ ],
+ "squish": [
+  "squish_1.ogg",
+  "squish_2.ogg",
+  "squish_3.ogg",
+  "squish_4.ogg",
+  "squish_5.ogg",
+  "squish_6.ogg",
+  "squish_7.ogg",
+  "squish_8.ogg",
+  "squish_9.ogg",
+  "squish_10.ogg"
+ ],
+ "stretch": [
+  "stretch_1.ogg",
+  "stretch_2.ogg",
+  "stretch_3.ogg",
+  "stretch_4.ogg",
+  "stretch_5.ogg"
+ ],
+ "suck": [
+  "suck.ogg"
+ ],
+ "tapestop": [
+  "tapestop.ogg"
+ ],
+ "tear": [
+  "tear.ogg"
+ ],
+ "warp": [
+  "warp.ogg"
+ ],
+ "whoosh": [
+  "whoosh_1.ogg",
+  "whoosh_2.ogg",
+  "whoosh_3.ogg",
+  "whoosh_4.ogg",
+  "whoosh_5.ogg",
+  "whoosh_6.ogg",
+  "whoosh_7.ogg",
+  "whoosh_8.ogg",
+  "whoosh_9.ogg",
+  "whoosh_10.ogg"
+ ],
+ "flap": [
+  "flap_1.ogg",
+  "flap_2.ogg",
+  "flap_3.ogg",
+  "flap_4.ogg",
+  "flap_5.ogg",
+  "flap_6.ogg",
+  "flap_7.ogg",
+  "flap_8.ogg",
+  "flap_9.ogg",
+  "flap_10.ogg",
+  "flap_11.ogg",
+  "flap_12.ogg"
+ ],
+ "paper": [
+  "paper_1.ogg",
+  "paper_2.ogg",
+  "paper_3.ogg",
+  "paper_4.ogg",
+  "paper_5.ogg"
+ ],
+ "marker": [
+  "marker_1.ogg",
+  "marker_2.ogg",
+  "marker_3.ogg",
+  "marker_4.ogg",
+  "marker_5.ogg",
+  "marker_6.ogg",
+  "marker_7.ogg",
+  "marker_8.ogg",
+  "marker_9.ogg"
+ ],
+ "typewriter": [
+  "typewriter_1.ogg",
+  "typewriter_2.ogg",
+  "typewriter_3.ogg",
+  "typewriter_4.ogg",
+  "typewriter_5.ogg",
+  "typewriter_6.ogg",
+  "typewriter_7.ogg",
+  "typewriter_8.ogg",
+  "typewriter_9.ogg",
+  "typewriter_10.ogg",
+  "typewriter_11.ogg",
+  "typewriter_12.ogg"
+ ],
+ "heart": [
+  "heart.ogg"
+ ],
+ "clock": [
+  "clock_1.ogg",
+  "clock_2.ogg",
+  "clock_3.ogg",
+  "clock_4.ogg",
+  "clock_5.ogg",
+  "clock_6.ogg",
+  "clock_7.ogg",
+  "clock_8.ogg",
+  "clock_9.ogg",
+  "clock_10.ogg",
+  "clock_11.ogg",
+  "clock_12.ogg"
+ ]
+}

@@ -37,12 +37,14 @@ außer der Nutzer verlangt ausdrücklich etwas anderes.
 
 ## Stimme & Ton
 
-- **ElevenLabs `eleven_v4`**, Stimme **Ben – Effortless and Casual** (`aTTiK3YzK3dXETpuDE2h`, für v4/Deutsch verifiziert),
-  `language_code: 'de'`, stability 0.5 · similarity 0.8. Zahlen ausgeschrieben.
+- **ElevenLabs `eleven_v4`**, Stimme **Dan – Radio Host & Moderator** (`utkd5fchbspYG3Ld0zt0`, für v4/Deutsch verifiziert),
+  `language_code: 'de'`, stability 0.5 · similarity 0.8. Zahlen ausgeschrieben. (Ab „Spaghetti“; Ben `aTTiK3YzK3dXETpuDE2h`
+  klang dem Nutzer „zu weit entfernt“ — Messung: Dan hat den kürzesten Nachhall, meiste Präsenz 2–6 kHz, sauberstes Rauschen.)
 - **Eine durchgehende Aufnahme** (`ONE_TAKE`). v4 ignoriert `speed` → die ganze Aufnahme wird gleichmäßig per
   Rubberband gestreckt (`TEMPO` in `voice-lines.js`, ≈ 1.2). **Nie innerhalb der Performance schneiden** (das klang
   „unflüssig“); Stille nur zwischen Zeilen am leisesten Punkt (`cut`) einfügen, wo das Bild Luft braucht.
-- Neue Stimmen erst mit kurzen Proben vergleichen (Pausen im Satz, Satzpausen, Tonhöhenumfang); Kontingent ist knapp.
+- Neue Stimmen erst mit kurzen Proben vergleichen: Fluss (Pausen im Satz, Satzpausen), Melodie (Tonhöhenumfang) und
+  **Nähe** (Nachhall nach Satzende, Präsenz 2–6 kHz, Grundrauschen). Kontingent ist knapp.
 - Foley: ElevenLabs SFX als Mehrfach-Takes → `scripts/slice.py`; jedes Geräusch gehört zu einem Bildereignis.
   Mix messen (Stems `--solo`, Sprachband 300 Hz–4 kHz): Stimme ≥ 6 dB über SFX; Wind/Rauschen tiefpassen. −14 LUFS.
 
