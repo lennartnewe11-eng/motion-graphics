@@ -8,7 +8,6 @@ from PIL import Image, ImageFilter, ImageOps
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 S = os.path.join(ROOT, '.scratch/vesna')
 OUT = os.path.join(ROOT, 'assets/vesna/img')
-os.makedirs(OUT, exist_ok=True)
 Image.MAX_IMAGE_PIXELS = None
 INK, MID, SNOW = np.array([9, 12, 17]), np.array([92, 101, 112]), np.array([232, 235, 238])
 
@@ -38,6 +37,7 @@ def fit(im, w):
     return im.resize((w, round(im.height * w / im.width)), Image.LANCZOS) if im.width > w else im
 
 def src(p):
+    os.makedirs(OUT, exist_ok=True)
     return Image.open(os.path.join(S, p))
 
 def cutout(name, path, box=None, scale=1.0, model='birefnet-general', edge=0, orange=False, keep=None, poly=None):
@@ -192,7 +192,8 @@ JOBS = {
     'fireball': lambda: fire('fireball', 'loc/fireball.jpg', (1000, 300, 2720, 980)),
 }
 
-only = sys.argv[1:]
-for k, fn in JOBS.items():
-    if only and k not in only: continue
-    fn()
+if __name__ == '__main__':  # importable: other films reuse grade()/cutout()/plate() with their own S/OUT
+    only = sys.argv[1:]
+    for k, fn in JOBS.items():
+        if only and k not in only: continue
+        fn()

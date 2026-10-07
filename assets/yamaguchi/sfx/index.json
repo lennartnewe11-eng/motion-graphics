@@ -1,0 +1,148 @@
+{
+ "ash_wind": [
+  "ash_wind.ogg"
+ ],
+ "bandage": [
+  "bandage_1.ogg",
+  "bandage_2.ogg",
+  "bandage_3.ogg",
+  "bandage_4.ogg",
+  "bandage_5.ogg",
+  "bandage_6.ogg",
+  "bandage_7.ogg",
+  "bandage_8.ogg",
+  "bandage_9.ogg"
+ ],
+ "blast_far": [
+  "blast_far.ogg"
+ ],
+ "cicadas": [
+  "cicadas.ogg"
+ ],
+ "clock": [
+  "clock_1.ogg",
+  "clock_2.ogg",
+  "clock_3.ogg",
+  "clock_4.ogg",
+  "clock_5.ogg",
+  "clock_6.ogg",
+  "clock_7.ogg",
+  "clock_8.ogg",
+  "clock_9.ogg",
+  "clock_10.ogg",
+  "clock_11.ogg",
+  "clock_12.ogg"
+ ],
+ "glass": [
+  "glass.ogg"
+ ],
+ "office": [
+  "office.ogg"
+ ],
+ "rumble": [
+  "rumble.ogg"
+ ],
+ "shelter": [
+  "shelter.ogg"
+ ],
+ "tinnitus": [
+  "tinnitus.ogg"
+ ],
+ "train_pass": [
+  "train_pass.ogg"
+ ],
+ "train_steam": [
+  "train_steam.ogg"
+ ],
+ "flap": [
+  "flap_1.ogg",
+  "flap_2.ogg",
+  "flap_3.ogg",
+  "flap_4.ogg",
+  "flap_5.ogg",
+  "flap_6.ogg",
+  "flap_7.ogg",
+  "flap_8.ogg",
+  "flap_9.ogg",
+  "flap_10.ogg",
+  "flap_11.ogg",
+  "flap_12.ogg"
+ ],
+ "typewriter": [
+  "typewriter_1.ogg",
+  "typewriter_2.ogg",
+  "typewriter_3.ogg",
+  "typewriter_4.ogg",
+  "typewriter_5.ogg",
+  "typewriter_6.ogg",
+  "typewriter_7.ogg",
+  "typewriter_8.ogg",
+  "typewriter_9.ogg",
+  "typewriter_10.ogg",
+  "typewriter_11.ogg",
+  "typewriter_12.ogg"
+ ],
+ "stamp": [
+  "stamp_1.ogg",
+  "stamp_2.ogg",
+  "stamp_3.ogg",
+  "stamp_4.ogg",
+  "stamp_5.ogg"
+ ],
+ "paper": [
+  "paper_1.ogg",
+  "paper_2.ogg",
+  "paper_3.ogg",
+  "paper_4.ogg",
+  "paper_5.ogg"
+ ],
+ "marker": [
+  "marker_1.ogg",
+  "marker_2.ogg",
+  "marker_3.ogg",
+  "marker_4.ogg",
+  "marker_5.ogg",
+  "marker_6.ogg",
+  "marker_7.ogg",
+  "marker_8.ogg",
+  "marker_9.ogg"
+ ],
+ "heart": [
+  "heart.ogg"
+ ],
+ "whoosh": [
+  "whoosh_1.ogg",
+  "whoosh_2.ogg",
+  "whoosh_3.ogg",
+  "whoosh_4.ogg",
+  "whoosh_5.ogg",
+  "whoosh_6.ogg",
+  "whoosh_7.ogg",
+  "whoosh_8.ogg",
+  "whoosh_9.ogg",
+  "whoosh_10.ogg"
+ ],
+ "wind_alt": [
+  "wind_alt.ogg"
+ ],
+ "debris": [
+  "debris.ogg"
+ ],
+ "fire": [
+  "fire.ogg"
+ ],
+ "switch": [
+  "switch_1.ogg",
+  "switch_2.ogg",
+  "switch_3.ogg",
+  "switch_4.ogg",
+  "switch_5.ogg"
+ ],
+ "crack": [
+  "crack_1.ogg",
+  "crack_2.ogg",
+  "crack_3.ogg",
+  "crack_4.ogg",
+  "crack_5.ogg"
+ ]
+}
