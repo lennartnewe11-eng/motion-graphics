@@ -27,6 +27,14 @@ außer der Nutzer verlangt ausdrücklich etwas anderes.
   Sonderzeichen (ć, Č …) brauchen die latin-ext-Fonts in `src/index.html`.
 - **Ende:** Loop — die letzte halbe Sekunde ist der Moment *vor* Frame 1.
 
+## Code-Bausteine
+
+- Hausstil-Bibliothek: `src/shorts/lib/night.js` (Nacht-Hintergrund, Foto-Wolkenfelder, Fallblatt `flap`, Zähler `drum`,
+  `word`/`tag`/`fallingWord`, `marker`, `flash`). Jeder Film setzt `V.accent` in seinem `common.js`.
+  Vorlagen: `src/shorts/vesna/` (Orange), `src/shorts/yamaguchi/` (Karmin; Silhouette, Pilzwolke, Durchschlag, Stempel).
+- Bildaufbereitung: `scripts/vesna_assets.py` ist importierbar (`grade`, `cutout`, `plate`, `cloud`), siehe `yamaguchi_assets.py`.
+- Ohne freies Foto einer Person: anonyme Tinten-Silhouette aus einem PD-Foto, in `SOURCES.md` als Platzhalter kennzeichnen.
+
 ## Stimme & Ton
 
 - **ElevenLabs `eleven_v4`**, Stimme **Ben – Effortless and Casual** (`aTTiK3YzK3dXETpuDE2h`, für v4/Deutsch verifiziert),

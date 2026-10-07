@@ -29,6 +29,14 @@ ELEVENLABS_API_KEY=… node scripts/sfx.mjs --film vesna && python3 scripts/slic
 node scripts/render.mjs --film vesna                          # -> renders/vesna.mp4
 ```
 
+**Yamaguchi** (`renders/yamaguchi.mp4`) — 61 s. Tsutomu Yamaguchi überlebt Hiroshima (6. 8. 1945) und drei Tage später
+Nagasaki. Hook: Silhouette vor der Hiroshima-Wolke → Zug → Fallblatt springt auf NAGASAKI → zweite Wolke. Akzent Karminrot.
+Kein freies Foto von ihm → anonyme Silhouette aus einem Bahnsteigfoto von 1902 (gekennzeichnet in `SOURCES.md`).
+
+```bash
+python3 scripts/yamaguchi_assets.py && node scripts/render.mjs --film yamaguchi
+```
+
 Regeln für die Reihe: `docs/STYLEGUIDE.md` §6–§9, Themen-Pool: `docs/THEMEN.md`, Quellen: `assets/<film>/SOURCES.md`.
 
 ---
