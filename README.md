@@ -37,7 +37,15 @@ Kein freies Foto von ihm → anonyme Silhouette aus einem Bahnsteigfoto von 1902
 python3 scripts/yamaguchi_assets.py && node scripts/render.mjs --film yamaguchi
 ```
 
-Regeln für die Reihe: `docs/STYLEGUIDE.md` §6–§9, Themen-Pool: `docs/THEMEN.md`, Quellen: `assets/<film>/SOURCES.md`.
+**Spaghetti** (`renders/spaghetti.mp4`) — 53 s. Spaghettifizierung am Schwarzen Loch. Erstmals mit Kreide-Zeichenebene
+(Schwarze Löcher, Raumzeit-Gitter, Pfeile — von Hand gezeichnet, „boilend“), 2.5D-Kamera (Fahrten, Rollen, Dolly-Zoom) und
+dem echten NASA-Astronauten (McCandless 1984), der entlang einer Spirale zur Nudel gezogen wird. Sprecher: Dan (`eleven_v4`).
+
+```bash
+python3 scripts/spaghetti_assets.py && node scripts/render.mjs --film spaghetti
+```
+
+Regeln für die Reihe: `docs/STYLEGUIDE.md` §6–§10, Themen-Pool: `docs/THEMEN.md`, Quellen: `assets/<film>/SOURCES.md`.
 
 ---
 

@@ -465,3 +465,22 @@ maximale Ästhetik, spannende Typografie, Hook = altes Flugzeug stürzt durch Wo
 - **Loop:** Die letzte halbe Sekunde ist der Fall *vor* Frame 1 (`fall(t − DURATION)`) — harter Schnitt auf den Wind.
 - **Mix:** Wind/Absturz breitbandig → Tiefpass 2,4 kHz und leise (≈ −8 dB unter Stimme im Sprachband), Explosion und
   Aufprall dürfen kurz darüber, weil sie zwischen Wörtern liegen.
+
+## 10. Detail & Bewegung „all out“ (Spaghetti, `src/shorts/spaghetti/`)
+
+Feedback: Dinge noch genauer darstellen (detailliertere Collagen), alternativ **von Hand gezeichnet**; Animationen mit
+Kamerafahrten und Zooms voll ausreizen; Sprecher näher.
+
+- **Zeichenebene (Kreide auf Nacht)** für alles, was es nicht als Foto gibt: Schwarze Löcher, Raumzeit-Gitter, Kraftpfeile,
+  Requisiten (Gabel, Tube, Auge, Uhr). Jede Linie = 2 leicht versetzte Durchgänge, „boilt“ auf Zweien (12 fps), wird
+  mit `p` gezogen (`chalk`, `chalkArrow`, `ellipsePts`, `blackHole`, `sheet` in `spaghetti/common.js`).
+- **Foto + Zeichnung mischen:** echte NASA-Fotos (Astronaut, Sonne, Hubble-Tiefenfelder als Tiefenebenen) treffen auf
+  Kreide — das Foto ist die Wirklichkeit, die Zeichnung die Physik.
+- **2.5D-Kamera:** Weltkoordinaten mit Tiefe z, Projektion F/(z − cam.z); Ebenen (`layer`) bewegen sich mit Parallaxe,
+  Sterne als 3D-Partikel ziehen bei schneller Fahrt Streifen. Pro Szene eine Kamera-Idee: Push-in mit Rollen (Hook),
+  Tilt am Wort entlang, Fahrt am Körper entlang (Kopf → Füße), **Dolly-Zoom** (Figur bleibt gleich groß, das Loch
+  schwillt an), Sturz ins Loch bis Schwarz, gewaltiger Rückzoom, Ritardando-Annäherung.
+- **Verformung echter Fotos:** `ribbon` schneidet ein Foto entlang seiner Körperachse in Streifen und legt sie auf einen
+  Pfad (Bogenlänge: Oberkörper behält Naturlänge, Beine werden gezogen) — Spaghettifizierung des echten Astronauten
+  und der echten Sonne. Für die Dehnung bleibt der Kopf fest, der Körper wird zum Loch hin ausgezogen.
+- **Musik spielt die Physik mit:** Ritardando bis zum Stillstand bei „verblasst“ (Zeitdilatation).
