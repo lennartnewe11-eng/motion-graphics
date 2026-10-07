@@ -41,7 +41,7 @@ Status: ☐ offen · ◐ in Arbeit · ☑ fertig
 
 | | Thema | Hook | Auflösung | Typo-Idee |
 |---|---|---|---|---|
-| ◐ | **Spaghettifizierung** | Ein Mensch wird **lang gezogen wie eine Nudel**. | Gezeitenkräfte am Schwarzen Loch | „SPAGHE———TTI“ dehnt sich wörtlich |
+| ✔ | **Spaghettifizierung** | Ein Mensch wird **lang gezogen wie eine Nudel**. | Gezeitenkräfte am Schwarzen Loch | „SPAGHE———TTI“ dehnt sich wörtlich |
 | ☐ | **Teelöffel Neutronenstern** | Ein Löffel fällt durch den Tisch — und durch die Erde. | Mehrere Milliarden Tonnen pro Teelöffel | Löffel ersetzt das „l“, Wort sackt durch |
 | ☐ | **Pistolenkrebs** | Krebs, kleiner als ein Finger, **tötet mit einem Knall**. | Kavitationsblase, fast so heiß wie die Sonnenoberfläche | 1-Frame-Flash, Wort zerrissen |
 | ☐ | **Carrington-Ereignis 1859** | Telegrafen **fangen Feuer**. Polarlichter in der Karibik. | Sonnensturm — und was er heute anrichten würde | Notifications fallen aus, Ordner regnen |
