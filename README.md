@@ -2,7 +2,7 @@
 
 Drei Filme, komplett aus Code gebaut:
 
-- **Pinterest — „Finde Ideen. Mach was draus.“** (`renders/pinterest-spot.mp4`) — 36 s Werbespot, 16:9, Buntstift-Welt + 3D.
+- **Pinterest — „Finde Ideen. Mach was draus.“** (`renders/pinterest-spot.mp4`) — 36 s Werbespot, 16:9, 1080p60, Buntstift-Welt + 3D, H.264 2-Pass (~13 Mbit/s) + AAC.
 
 - **Flow** (`renders/claude-flow.mp4`) — 50 s One-Take ohne einen einzigen Schnitt, mit Voice-over (ElevenLabs).
 - **Motion Reel** (`renders/claude-motion-reel.mp4`) — 56 s Kapitel-Showreel.
