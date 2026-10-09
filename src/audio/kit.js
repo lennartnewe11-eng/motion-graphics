@@ -698,6 +698,308 @@ Object.assign(SFX, {
   },
 });
 
+
+// ---- instruments + sound design for the Pinterest spot
+// Marimba: sine fundamental + a quickly decaying 4th harmonic and a woody click.
+export function marimba(ac, out, t, midi, v = 1, { p = 0, decay = 0.5 } = {}) {
+  const f = mtof(midi);
+  const g = gainNode(ac, 0);
+  perc(g, t, v, decay, 0.002);
+  const pn = pan(ac, p);
+  chain(osc(ac, 'sine', f, t, decay + 0.1), g, pn, out);
+  const g2 = gainNode(ac, 0);
+  perc(g2, t, v * 0.35, decay * 0.18, 0.001);
+  chain(osc(ac, 'sine', f * 4, t, 0.2), g2, pn);
+  const g3 = gainNode(ac, 0);
+  perc(g3, t, v * 0.25, 0.012, 0.0005);
+  chain(noise(ac, t, 0.03), filt(ac, 'bandpass', f * 6, 2), g3, pn);
+  return pn;
+}
+// Formant "vocal chop": pulse-ish source through three vowel formants.
+const VOWELS = { a: [[800, 1], [1150, 0.5], [2900, 0.25]], o: [[450, 1], [800, 0.45], [2830, 0.12]], e: [[400, 1], [2000, 0.4], [2550, 0.25]], i: [[300, 1], [2300, 0.35], [3000, 0.25]], u: [[325, 1], [700, 0.25], [2530, 0.06]] };
+export function vox(ac, out, t, midi, dur, v = 1, { vowel = 'a', to = null, p = 0, glide = 0 } = {}) {
+  const f = mtof(midi);
+  const src = osc(ac, 'sawtooth', f, t, dur + 0.1);
+  const src2 = osc(ac, 'square', f * 1.002, t, dur + 0.1);
+  if (glide) { src.frequency.setValueAtTime(f * Math.pow(2, glide / 12), t); src.frequency.exponentialRampToValueAtTime(f, t + 0.08); src2.frequency.setValueAtTime(f * Math.pow(2, glide / 12), t); src2.frequency.exponentialRampToValueAtTime(f * 1.002, t + 0.08); }
+  const vib = osc(ac, 'sine', 5.5, t, dur + 0.1), vg = gainNode(ac, f * 0.012);
+  vib.connect(vg); vg.connect(src.frequency); vg.connect(src2.frequency);
+  const mixIn = gainNode(ac, 0.5);
+  src.connect(mixIn); const s2g = gainNode(ac, 0.3); src2.connect(s2g); s2g.connect(mixIn);
+  const env = gainNode(ac, 0);
+  ahr(env, t, v, 0.012, Math.max(0.01, dur - 0.06), 0.06);
+  const pn = pan(ac, p);
+  VOWELS[vowel].forEach(([F, a], i) => {
+    const bp = filt(ac, 'bandpass', F, 9 + i * 3);
+    if (to) bp.frequency.linearRampToValueAtTime(VOWELS[to][i][0], t + dur);
+    const g = gainNode(ac, a * 2.2);
+    chain(mixIn, bp, g, env);
+  });
+  env.connect(pn); pn.connect(out);
+  return pn;
+}
+export function snap(ac, out, t, v = 1, p = 0) {
+  const g = gainNode(ac, 0);
+  perc(g, t, v, 0.06, 0.0008);
+  chain(noise(ac, t, 0.08), filt(ac, 'bandpass', 2600, 1.4), g, pan(ac, p), out);
+  const g2 = gainNode(ac, 0);
+  perc(g2, t, v * 0.5, 0.01, 0.0005);
+  chain(osc(ac, 'sine', 1800, t, 0.03), g2, pan(ac, p), out);
+}
+export function rim(ac, out, t, v = 1, p = 0) {
+  const g = gainNode(ac, 0);
+  perc(g, t, v, 0.035, 0.0005);
+  chain(osc(ac, 'triangle', 1700, t, 0.05), filt(ac, 'bandpass', 1700, 3), g, pan(ac, p), out);
+  const g2 = gainNode(ac, 0);
+  perc(g2, t, v * 0.5, 0.02, 0.0005);
+  chain(noise(ac, t, 0.03), filt(ac, 'highpass', 3000), g2, pan(ac, p), out);
+}
+export function cowbell(ac, out, t, v = 1, p = 0.3) {
+  const g = gainNode(ac, 0);
+  perc(g, t, v, 0.22, 0.001);
+  const bp = filt(ac, 'bandpass', 800, 3);
+  osc(ac, 'square', 540, t, 0.3).connect(bp); osc(ac, 'square', 800, t, 0.3).connect(bp);
+  chain(bp, g, pan(ac, p), out);
+}
+export function revCymbal(ac, out, t, dur = 1, v = 1) {
+  const n = noise(ac, t, dur);
+  const g = gainNode(ac, 0);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(v, t + dur * 0.98);
+  g.gain.linearRampToValueAtTime(0, t + dur);
+  chain(n, filt(ac, 'highpass', 4000), filt(ac, 'peaking', 9000, 0.8), g, out);
+}
+
+const F_PENTA = [65, 67, 69, 72, 74, 77, 79, 81, 84];
+Object.assign(SFX, {
+  // drawing
+  pencilLine(ac, b, c) {
+    // graphite on paper: band-passed noise with stroke-rate modulation and grain crackle
+    const d = c.dur || 1;
+    const n = noise(ac, c.t, d);
+    const bp = filt(ac, 'bandpass', 3800, 1.6);
+    const g = gainNode(ac, 0);
+    g.gain.setValueAtTime(0, c.t);
+    for (let k = 0; k <= d / 0.03; k++) {
+      const u = (k * 0.03) / d;
+      g.gain.linearRampToValueAtTime((0.12 + 0.18 * Math.abs(Math.sin(u * 22)) + rnd() * 0.06) * c.gain, c.t + k * 0.03);
+      bp.frequency.setValueAtTime(3000 + 2000 * Math.abs(Math.sin(u * 22)), c.t + k * 0.03);
+    }
+    g.gain.linearRampToValueAtTime(0, c.t + d);
+    chain(n, filt(ac, 'highpass', 1200), bp, g, pan(ac, 0.2), b.out);
+    for (let k = 0; k < d * 40; k++) { const t = c.t + rnd() * d; const ng = gainNode(ac, 0); perc(ng, t, 0.06 * c.gain, 0.006, 0.0005); chain(noise(ac, t, 0.01), filt(ac, 'highpass', 6000), ng, b.out); }
+  },
+  hatching(ac, b, c) {
+    // fast back-and-forth colouring strokes (~9 per second)
+    const d = c.dur || 0.5;
+    for (let t = c.t; t < c.t + d; t += 0.055 + rnd() * 0.02) {
+      const L = 0.05 + rnd() * 0.02;
+      const n = noise(ac, t, L);
+      const g = gainNode(ac, 0);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.32 * c.gain, t + L * 0.3);
+      g.gain.linearRampToValueAtTime(0, t + L);
+      const bp = filt(ac, 'bandpass', 2200 + rnd() * 1800, 1.3);
+      bp.frequency.linearRampToValueAtTime(3500 + rnd() * 1500, t + L);
+      chain(n, filt(ac, 'highpass', 900), bp, g, pan(ac, (c.pan || 0) + (rnd() - 0.5) * 0.3), b.out);
+    }
+  },
+  pencilWrite(ac, b, c) { SFX.hatching(ac, b, { ...c, gain: c.gain * 0.6 }); SFX.pencilLine(ac, b, { ...c, gain: c.gain * 0.5 }); },
+  boil(ac, b, c) {
+    // the drawing comes alive: a tiny sparkle + soft "pff"
+    SFX.shimmer(ac, b, { t: c.t, gain: c.gain * 0.5 });
+    sweep(ac, b.out, c.t, 0.25, { f0: 500, f1: 2400, v: 0.2 * c.gain, shape: 'bell' });
+  },
+  check(ac, b, c) {
+    SFX.pencilLine(ac, b, { t: c.t, dur: 0.18, gain: c.gain * 0.8 });
+    [84, 91].forEach((m, i) => { const g = gainNode(ac, 1); bell(ac, g, c.t + 0.12 + i * 0.07, m, 0.12 * c.gain, 0.8); g.connect(b.out); const s = gainNode(ac, 0.5); g.connect(s); s.connect(b.rev); });
+  },
+  // touch
+  tap(ac, b, c) {
+    // fingertip on glass: soft low knock + bright tick
+    const o = osc(ac, 'sine', 180, c.t, 0.12);
+    o.frequency.exponentialRampToValueAtTime(90, c.t + 0.06);
+    const g = gainNode(ac, 0); perc(g, c.t, 0.55 * c.gain, 0.07, 0.001);
+    chain(o, g, b.out);
+    const g2 = gainNode(ac, 0); perc(g2, c.t, 0.25 * c.gain, 0.012, 0.0005);
+    chain(noise(ac, c.t, 0.02), filt(ac, 'bandpass', 5200, 1.5), g2, b.out);
+    SFX.click(ac, b, { t: c.t + 0.005, gain: c.gain * 0.35, pitch: 1.4 });
+  },
+  tapBig(ac, b, c) {
+    SFX.tap(ac, b, { ...c, gain: c.gain * 1.2 });
+    subDrop(ac, b.out, c.t, 0.5 * c.gain, 0.5);
+    const g = sweep(ac, b.out, c.t, 0.5, { f0: 4000, f1: 600, v: 0.25 * c.gain, shape: 'perc' });
+    const s = gainNode(ac, 0.5); g.connect(s); s.connect(b.rev);
+    SFX.pop(ac, b, { t: c.t + 0.01, gain: c.gain * 0.6, pitch: 1.5 });
+  },
+  touch(ac, b, c) { const g = gainNode(ac, 0); perc(g, c.t, 0.2 * c.gain, 0.03, 0.001); chain(noise(ac, c.t, 0.04), filt(ac, 'bandpass', 1800, 2), g, b.out); },
+  lift(ac, b, c) { SFX.pop(ac, b, { t: c.t, gain: c.gain * 0.5, pitch: 1.1 }); sweep(ac, b.out, c.t, 0.35, { f0: 400, f1: 3000, v: 0.25 * c.gain, shape: 'rise' }); },
+  flick(ac, b, c) {
+    sweep(ac, b.out, c.t - 0.03, 0.42, { f0: 700, f1: 7000, v: 0.6 * c.gain, shape: 'bell', q: 1.3, p0: 0.3, p1: -0.3 });
+    sweep(ac, b.out, c.t, 0.6, { f0: 3000, f1: 300, v: 0.3 * c.gain, shape: 'perc', q: 0.8 });
+    SFX.touch(ac, b, { t: c.t - 0.02, gain: c.gain });
+  },
+  whooshBig(ac, b, c) {
+    const g = sweep(ac, b.out, c.t - 0.35, 0.9, { f0: 200, f1: 5000, v: 0.6 * c.gain, shape: 'bell', q: 0.9, p0: -0.7, p1: 0.7 });
+    const s = gainNode(ac, 0.4); g.connect(s); s.connect(b.rev);
+    subDrop(ac, b.out, c.t, 0.4 * c.gain, 0.9);
+  },
+  swipe(ac, b, c) {
+    sweep(ac, b.out, c.t, 0.32, { f0: 900, f1: 5000, v: 0.5 * c.gain, shape: 'bell', q: 1.5, p0: 0.7, p1: -0.7 });
+    SFX.flip(ac, b, { t: c.t + 0.18, gain: c.gain * 0.5 });
+  },
+  scrollTick(ac, b, c) {
+    // haptic detent: very short pitched click
+    const o = osc(ac, 'square', 3200 * (c.pitch || 1), c.t, 0.012);
+    const g = gainNode(ac, 0); perc(g, c.t, 0.09 * c.gain, 0.006, 0.0003);
+    chain(o, filt(ac, 'bandpass', 3800 * (c.pitch || 1), 4), g, pan(ac, c.pan || 0), b.out);
+  },
+  scrollStop(ac, b, c) {
+    // the finger catches the feed: tape-stop pitch dive + thud
+    const o = osc(ac, 'sawtooth', 220, c.t, 0.5);
+    o.frequency.setValueAtTime(330, c.t);
+    o.frequency.exponentialRampToValueAtTime(40, c.t + 0.45);
+    const g = gainNode(ac, 0); ahr(g, c.t, 0.12 * c.gain, 0.005, 0.25, 0.2);
+    chain(o, filt(ac, 'lowpass', 1400, 2), g, b.out);
+    kick(ac, b.out, c.t, 0.5 * c.gain, { tight: true });
+  },
+  // cards + ui
+  cardPop(ac, b, c) {
+    const m = F_PENTA[(c.step || 0) % F_PENTA.length];
+    const pn = marimba(ac, b.out, c.t, m, 0.28 * c.gain, { p: ((c.step || 0) % 2 ? 0.4 : -0.4), decay: 0.4 });
+    const s = gainNode(ac, 0.35); pn.connect(s); s.connect(b.delay);
+    SFX.pop(ac, b, { t: c.t, gain: c.gain * 0.45, pitch: 1 + (c.step || 0) * 0.12 });
+    SFX.swarm(ac, b, { t: c.t, dur: 0.12, gain: c.gain * 0.25 });
+  },
+  slideDown(ac, b, c) { sweep(ac, b.out, c.t, 0.3, { f0: 2500, f1: 600, v: 0.25 * c.gain, shape: 'bell' }); SFX.click(ac, b, { t: c.t + 0.26, gain: c.gain * 0.4, pitch: 0.9 }); },
+  lettersLock(ac, b, c) {
+    // eight cards snap into a row: eight fast clacks, then a chord stab
+    for (let k = 0; k < 8; k++) SFX.clack(ac, b, { t: c.t - 0.24 + k * 0.03, gain: c.gain * 0.35 });
+    stab(ac, b.out, c.t + 0.05, [65, 69, 72, 76, 81], 0.12 * c.gain, 0.5);
+    const g = gainNode(ac, 1); bell(ac, g, c.t + 0.05, 89, 0.1 * c.gain, 1.2); g.connect(b.out); const s = gainNode(ac, 0.7); g.connect(s); s.connect(b.rev);
+  },
+  tiltRise(ac, b, c) { SFX.zoom(ac, b, { ...c, gain: c.gain * 0.6 }); },
+  tiltDown(ac, b, c) { SFX.suck(ac, b, { ...c, gain: c.gain }); },
+  cardOpen(ac, b, c) { sweep(ac, b.out, c.t, 0.4, { f0: 300, f1: 3500, v: 0.4 * c.gain, shape: 'bell', q: 1 }); SFX.pop(ac, b, { t: c.t + 0.35, gain: c.gain * 0.5, pitch: 0.8 }); },
+  save(ac, b, c) {
+    // press, then a bright pluck chord that climbs with every saved idea
+    const k = c.step || 0;
+    SFX.tap(ac, b, { t: c.t, gain: c.gain * 0.8 });
+    const roots = [[72, 76, 79], [74, 77, 81], [76, 79, 84], [77, 81, 84, 89]][k % 4];
+    roots.forEach((m, i) => { const g = pluck(ac, b.out, c.t + 0.02 + i * 0.025, m, 0.13 * c.gain, { decay: 0.35, cutoff: 5000, p: (i - 1) * 0.4 }); const s = gainNode(ac, 0.5); g.connect(s); s.connect(b.delay); });
+    const g = gainNode(ac, 1); bell(ac, g, c.t + 0.04, roots[roots.length - 1] + 12, 0.1 * c.gain, 1.0); g.connect(b.out); const s = gainNode(ac, 0.7); g.connect(s); s.connect(b.rev);
+  },
+  confetti3d(ac, b, c) {
+    for (let i = 0; i < 14; i++) { const t = c.t + Math.pow(rnd(), 1.4) * 0.6; SFX.blob(ac, b, { t, gain: c.gain * (0.12 + rnd() * 0.2), pitch: 1 + rnd() * 1.8 }); }
+    SFX.confetti(ac, b, { t: c.t, gain: c.gain * 0.6 });
+  },
+  boardDrop(ac, b, c) { SFX.whoosh(ac, b, { t: c.t - 0.3, dur: 0.32, gain: c.gain * 0.5, pan: 0.6 }); SFX.drip(ac, b, { t: c.t, gain: c.gain * 0.8 }); SFX.tick(ac, b, { t: c.t + 0.04, gain: c.gain, pitch: 1.1 + (c.step || 0) * 0.15 }); },
+  boardOpen(ac, b, c) { SFX.zip(ac, b, { t: c.t, dur: 0.35, gain: c.gain * 0.6 }); SFX.chime(ac, b, { t: c.t + 0.3, gain: c.gain * 0.6 }); },
+  portal(ac, b, c) { const d = c.dur || 0.8; SFX.zoom(ac, b, { t: c.t, dur: d, gain: c.gain * 0.7 }); revCymbal(ac, b.out, c.t, d, 0.3 * c.gain); },
+  pageOpen(ac, b, c) { sweep(ac, b.out, c.t, 0.5, { f0: 1200, f1: 300, v: 0.35 * c.gain, shape: 'perc', q: 0.8 }); SFX.shimmer(ac, b, { t: c.t, gain: c.gain * 0.5 }); },
+  // foley
+  sizzle(ac, b, c) {
+    const d = c.dur || 2;
+    const n = noise(ac, c.t, d);
+    const g = gainNode(ac, 0); ahr(g, c.t, 0.06 * c.gain, 0.3, d - 0.6, 0.3);
+    chain(n, filt(ac, 'highpass', 5000), filt(ac, 'peaking', 8000, 1), g, pan(ac, 0.4), b.out);
+    for (let k = 0; k < d * 30; k++) { const t = c.t + rnd() * d; const ng = gainNode(ac, 0); perc(ng, t, 0.05 * c.gain, 0.005, 0.0005); chain(noise(ac, t, 0.01), filt(ac, 'bandpass', 3000 + rnd() * 5000, 3), ng, pan(ac, 0.3 + rnd() * 0.3), b.out); }
+  },
+  stir(ac, b, c) {
+    // wooden spoon scraping round the pot
+    const n = noise(ac, c.t, 0.4);
+    const g = gainNode(ac, 0); ahr(g, c.t, 0.12 * c.gain, 0.1, 0.15, 0.15);
+    const bp = filt(ac, 'bandpass', 600, 3); bp.frequency.linearRampToValueAtTime(1100, c.t + 0.35);
+    chain(n, bp, g, pan(ac, 0.35), b.out);
+    tom(ac, b.out, c.t + 0.2, 0.08 * c.gain, 320);
+  },
+  bubble(ac, b, c) {
+    const pp = c.pitch || 1;
+    const o = osc(ac, 'sine', 300 * pp, c.t, 0.08);
+    o.frequency.exponentialRampToValueAtTime(900 * pp, c.t + 0.05);
+    const g = gainNode(ac, 0); perc(g, c.t, 0.18 * c.gain, 0.05, 0.002);
+    chain(o, g, pan(ac, 0.4), b.out);
+  },
+  paperThump(ac, b, c) { const g = gainNode(ac, 0); perc(g, c.t, 0.4 * c.gain, 0.12, 0.001); chain(noise(ac, c.t, 0.15), filt(ac, 'lowpass', 900), g, b.out); kick(ac, b.out, c.t, 0.3 * c.gain, { tight: true }); },
+  wheel(ac, b, c) {
+    const d = c.dur || 2;
+    const o = osc(ac, 'sawtooth', 52, c.t, d);
+    const g = gainNode(ac, 0); ahr(g, c.t, 0.05 * c.gain, 0.3, d - 0.6, 0.3);
+    const lfo = osc(ac, 'sine', 3, c.t, d), lg = gainNode(ac, 0.02 * c.gain); lfo.connect(lg); lg.connect(g.gain);
+    chain(o, filt(ac, 'lowpass', 260, 2), g, b.out);
+  },
+  squish(ac, b, c) {
+    const pp = c.pitch || 1;
+    const n = noise(ac, c.t, 0.25);
+    const g = gainNode(ac, 0); ahr(g, c.t, 0.18 * c.gain, 0.03, 0.08, 0.12);
+    const bp = filt(ac, 'bandpass', 500 * pp, 4); bp.frequency.exponentialRampToValueAtTime(1400 * pp, c.t + 0.2);
+    chain(n, bp, g, pan(ac, -0.2), b.out);
+    SFX.blob(ac, b, { t: c.t, gain: c.gain * 0.3, pitch: 0.6 * pp });
+  },
+  wind(ac, b, c) {
+    const d = c.dur || 2;
+    const n = noise(ac, c.t, d);
+    const bp = filt(ac, 'bandpass', 500, 0.8);
+    for (let k = 0; k <= 8; k++) bp.frequency.linearRampToValueAtTime(400 + rnd() * 700, c.t + (k / 8) * d);
+    const g = gainNode(ac, 0); ahr(g, c.t, 0.25 * c.gain, d * 0.3, d * 0.3, d * 0.4);
+    const pn = ac.createStereoPanner(); const pl = osc(ac, 'sine', 0.3, c.t, d); pl.connect(pn.pan);
+    chain(n, bp, g, pn, b.out);
+  },
+  bird(ac, b, c) {
+    const pp = c.pitch || 1;
+    for (let k = 0; k < 3; k++) {
+      const t = c.t + k * 0.09;
+      const o = osc(ac, 'sine', 3200 * pp, t, 0.08);
+      o.frequency.setValueAtTime(2600 * pp, t); o.frequency.exponentialRampToValueAtTime(4200 * pp, t + 0.04); o.frequency.exponentialRampToValueAtTime(3000 * pp, t + 0.07);
+      const g = gainNode(ac, 0); perc(g, t, 0.07 * c.gain, 0.06, 0.004);
+      chain(o, g, pan(ac, 0.6 - k * 0.2), b.out);
+      const s = gainNode(ac, 0.4); g.connect(s); s.connect(b.rev);
+    }
+  },
+  cheer(ac, b, c) {
+    // tiny crowd "yay": a few formant voices gliding up
+    [[64, -0.5], [67, 0.1], [71, 0.5], [60, -0.2]].forEach(([m, p], i) => vox(ac, b.out, c.t + i * 0.02, m, 0.5, 0.06 * c.gain, { vowel: 'e', to: 'a', p, glide: -5 }));
+    SFX.shimmer(ac, b, { t: c.t + 0.1, gain: c.gain * 0.6 });
+  },
+  landing(ac, b, c) { kick(ac, b.out, c.t, 0.25 * c.gain, { tight: true }); const g = gainNode(ac, 0); perc(g, c.t, 0.15 * c.gain, 0.08, 0.001); chain(noise(ac, c.t, 0.1), filt(ac, 'bandpass', 1200, 1), g, b.out); },
+  vinylStart(ac, b, c) {
+    // needle drop: crackle + a little wow
+    const g = gainNode(ac, 0); perc(g, c.t, 0.3 * c.gain, 0.08, 0.001); chain(noise(ac, c.t, 0.1), filt(ac, 'bandpass', 2000, 1), g, b.out);
+    for (let k = 0; k < 40; k++) { const t = c.t + rnd() * 1.6; const ng = gainNode(ac, 0); perc(ng, t, 0.05 * c.gain, 0.003, 0.0004); chain(noise(ac, t, 0.006), filt(ac, 'highpass', 3000), ng, b.out); }
+  },
+  stomp(ac, b, c) { kick(ac, b.out, c.t, 0.25 * c.gain, { tight: true }); clap(ac, b.out, c.t + 0.25, 0.12 * c.gain, b.rev); },
+  zoomOut(ac, b, c) { const d = c.dur || 0.8; SFX.suck(ac, b, { t: c.t, dur: d, gain: c.gain * 0.8 }); revCymbal(ac, b.out, c.t, d, 0.25 * c.gain); },
+  // end card
+  cardsGather(ac, b, c) { for (let k = 0; k < 4; k++) SFX.flip(ac, b, { t: c.t + 0.12 + k * 0.08, gain: c.gain * 0.5 }); SFX.whoosh(ac, b, { t: c.t, dur: 0.5, gain: c.gain * 0.5 }); },
+  fallWhistle(ac, b, c) {
+    const d = c.dur || 0.4;
+    const o = osc(ac, 'sine', 2400, c.t, d);
+    o.frequency.exponentialRampToValueAtTime(700, c.t + d);
+    const g = gainNode(ac, 0); ahr(g, c.t, 0.08 * c.gain, d * 0.3, d * 0.5, d * 0.2);
+    chain(o, g, b.out);
+    sweep(ac, b.out, c.t, d, { f0: 600, f1: 5000, v: 0.3 * c.gain, shape: 'rise' });
+  },
+  pinThunk(ac, b, c) {
+    // push pin into cork: woody thunk + short metallic ring
+    kick(ac, b.out, c.t, 0.8 * c.gain, { tight: true });
+    tom(ac, b.out, c.t, 0.5 * c.gain, 140);
+    const g = gainNode(ac, 0); perc(g, c.t, 0.4 * c.gain, 0.05, 0.0006);
+    chain(noise(ac, c.t, 0.06), filt(ac, 'bandpass', 1400, 2), g, b.out);
+    const m = gainNode(ac, 1); bell(ac, m, c.t, 100, 0.05 * c.gain, 0.5); m.connect(b.out);
+  },
+  logoHit(ac, b, c) {
+    SFX.impact(ac, b, { t: c.t, gain: c.gain * 0.8 });
+    [53, 60, 65, 69, 72, 77].forEach((m, i) => { const g = gainNode(ac, 1); bell(ac, g, c.t + i * 0.012, m + 12, 0.07 * c.gain, 2.6, (i - 2.5) * 0.3); g.connect(b.out); const s = gainNode(ac, 0.9); g.connect(s); s.connect(b.rev); });
+    vox(ac, b.out, c.t, 69, 0.9, 0.05 * c.gain, { vowel: 'o', to: 'a', p: -0.3 });
+    vox(ac, b.out, c.t, 72, 0.9, 0.05 * c.gain, { vowel: 'o', to: 'a', p: 0.3 });
+  },
+  wordSwish(ac, b, c) { sweep(ac, b.out, c.t, 0.5, { f0: 800, f1: 6000, v: 0.4 * c.gain, shape: 'bell', p0: -0.6, p1: 0.6 }); },
+  shapesPop(ac, b, c) { for (let k = 0; k < 10; k++) SFX.pop(ac, b, { t: c.t + k * 0.06 + rnd() * 0.03, gain: c.gain * 0.4, pitch: 0.8 + rnd() * 1.2 }); },
+  typeTick(ac, b, c) { SFX.click(ac, b, { t: c.t, gain: c.gain * 0.5, pitch: c.pitch || 1 }); SFX.swish(ac, b, { t: c.t, gain: c.gain * 0.5 }); },
+  ctaPop(ac, b, c) { SFX.pop(ac, b, { t: c.t, gain: c.gain, pitch: 0.9 }); marimba(ac, b.out, c.t + 0.03, 77, 0.2 * c.gain); },
+  tail(ac, b, c) { SFX.shimmer(ac, b, { t: c.t, gain: c.gain * 0.6 }); },
+});
+
 export function playSfx(ac, bus, cue) {
   const f = SFX[cue.type];
   if (!f) { console.warn('unknown sfx', cue.type); return; }

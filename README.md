@@ -1,9 +1,57 @@
 # Claude — Motion Design
 
-Zwei Filme, komplett aus Code gebaut:
+Drei Filme, komplett aus Code gebaut:
+
+- **Pinterest — „Finde Ideen. Mach was draus.“** (`renders/pinterest-spot.mp4`) — 36 s Werbespot, 16:9, Buntstift-Welt + 3D.
 
 - **Flow** (`renders/claude-flow.mp4`) — 50 s One-Take ohne einen einzigen Schnitt, mit Voice-over (ElevenLabs).
 - **Motion Reel** (`renders/claude-motion-reel.mp4`) — 56 s Kapitel-Showreel.
+
+## Pinterest — Spec-Spot (36 s, 1920×1080, 60 fps)
+
+Inoffizieller Spec-/Portfolio-Spot (keine Beauftragung durch Pinterest). Thema: **Scrollen → Tippen → Speichern → Machen.**
+Weißer Hintergrund, Pinterest-Bildsprache (Masonry-Feed, runde Pins, Pinterest-Rot `#E60023`, „Speichern“-Button, Boards),
+alle Menschen und Pin-Motive als **Buntstiftzeichnungen** und dazwischen glänzende **3D-Formen**. Kein Stock-Material: jedes Bild, jede Figur und jeder Ton ist Code.
+
+| Zeit | Akt | Was passiert |
+|------|-----|--------------|
+| 0:00 | Der erste Strich | 3D-Buntstifte fliegen ein, der rote zeichnet die Kontur einer Hand, ein zweiter schraffiert sie aus – die Zeichnung erwacht („Boiling“) |
+| 0:02 | Ein Tipp | Die Hand tippt auf das weiße Blatt: der Feed poppt in Ringen aus dem Tipp (auf 16tel quantisiert, jeder Ring ein Ton) |
+| 0:04 | Scrollen | Wisch-Gesten mit Trägheit, Jelly-Scroll (jede Spalte leicht verzögert), echter Motion Blur; acht Spalten richten sich exakt zu **S-C-R-O-L-L-E-N** aus |
+| 0:06 | Entdecken | 3D-Kamerafahrt: die Pinnwand kippt zum Boden, schwingt, schwebende 3D-Formen mit weichen Schatten |
+| 0:11 | Fangen & Tippen | Der Finger stoppt den Feed (Tape-Stop im Sound), tippt den Pasta-Pin an, der zur Detailseite aufgeht |
+| 0:13 | Speichern | „Speichern“ → „Gespeichert“, 3D-Konfetti, der Pin fliegt ins Board; Wischen zum nächsten Pin, viermal im Rhythmus |
+| 0:18 | Board | Das Board „Sonntagsideen“ öffnet sich, der Pasta-Pin wird zum Portal |
+| 0:20 | Machen | Ein durchgehendes Skizzenbuch-Panorama mit Whip-Pans: Kochen, Töpfern, Gipfel, Tanzen – animierte Buntstift-Figuren mit handschriftlichen Notizen |
+| 0:29 | Zurück aufs Board | Die Kamera zieht auf, die vier Szenen werden zu Pins |
+| 0:30 | Logo | Die Karten stapeln sich, eine 3D-Pinnadel pinnt sie fest, ihr Kopf wird zum Logo; „Finde Ideen. Mach was draus.“, CTA „Jetzt entdecken“ wird angetippt |
+
+**Technik**
+
+- `src/pinterest/pencil.js` — Buntstift-Renderer: Scanline-Schraffur mit kurzen, gebogenen Strichen (ausgefranste Kanten wie echt),
+  Kreuzschraffur für Schatten (Form-Licht statt Planar-Gradient), abgesetzte Konturen mit Druck-Taper, periodische Papierstruktur
+  frisst Pigment weg, Multiply-Komposit; deterministisches „Boiling“ mit 8 fps; Zeichnen-/Reveal-Animation.
+- `src/pinterest/figures.js` — gezeichnete Hand + 2D-Character-Rig (Becken → Wirbelsäule → Kopf, 2-Bone-IK für Arme/Beine,
+  Gesichter mit Blinzeln/Lächeln/Mund, Frisuren, Kleidung, Accessoires).
+- `src/pinterest/pins.js` — 26 prozedurale Pin-Illustrationen als Karten-Texturen (Pasta, Keramik, Berge, Café, Tarte, Camping, …).
+- `src/pinterest/gl.js` — three.js-Ebene mit pixelgenauer Kamera (z = 0 ↔ Frame), Matcaps, die einmalig aus einer
+  Clear-Coat-PBR-Kugel gebacken werden (PBR-Look für den Preis eines Texture-Lookups), 3D-Buntstift, Pinnadel, Herz, Stern, Knoten …
+- `src/pinterest/wall.js` — Masonry-Feed in 3D, Scroll-Physik in geschlossener Form (Flicks + Reibung + „Fangen“), Buchstaben-Pins.
+- `feed.js` / `make.js` / `end.js` — die drei Teile; `score.js` — die Musik.
+
+**Sound** (Web Audio, `OfflineAudioContext`): 120 BPM, F-Dur (F – Dm – B♭ – C). Intro mit Stift-Kratz-Groove und Marimba-Motiv,
+House-Groove beim Scrollen, Tape-Stop unter dem Finger, Half-Time-Bounce beim Speichern (jedes Speichern ein höherer Akkord),
+Chorus mit Formant-„Vocal Chops“, Cowbell beim Tanzen, Drop-out vor dem Logo, Logo-Akkord und die Marimba-Antwort im Outro.
+Über 50 eigene Effekte: Graphit-Striche, Schraffur, Fingertipps auf Glas, haptische Scroll-Ticks (aus der Scroll-Simulation
+berechnet), gestimmte Pin-Pops, Whooshes, Konfetti, Töpferscheibe, Brutzeln, Blubbern, Wind, Vögel, Jubel, Plattennadel, Pinnadel-„Thunk“ …
+
+```bash
+node scripts/render.mjs --film pinterest --out renders/pinterest-spot.mp4    # final
+node scripts/render.mjs --film pinterest --fps 30 --fast --out out/draft.mp4 # schneller Entwurf ohne Motion Blur
+npm run preview   # dann /src/index.html?preview&film=pinterest
+```
+
+---
 
 ## Flow — One Take, 0 Cuts
 

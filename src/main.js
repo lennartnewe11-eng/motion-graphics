@@ -4,7 +4,8 @@ import { renderMix } from './audio/index.js';
 
 // Which film to load: ?film=reel (default) or ?film=flow
 const FILM = new URLSearchParams(location.search).get('film') || 'reel';
-const film = await import(FILM === 'flow' ? './flow/film.js' : './reel.js');
+const FILMS = { reel: './reel.js', flow: './flow/film.js', pinterest: './pinterest/film.js' };
+const film = await import(FILMS[FILM] || FILMS.reel);
 const { compose, init, blurSamples, FPS, DURATION, cueSheet } = film;
 const mixOpts = (o = {}) => ({
   ...o,
@@ -21,6 +22,7 @@ const FONTS = [
   '400 40px "JetBrains Mono"', '500 40px "JetBrains Mono"', '700 40px "JetBrains Mono"', '800 40px "JetBrains Mono"',
   '800 40px Syne', 'italic 900 40px "Playfair Display"', '900 40px Unbounded', '400 40px "Bebas Neue"',
   '900 40px Fraunces', '700 40px "Space Grotesk"',
+  '400 40px Caveat', '700 40px Caveat', '800 40px InterV', '700 40px InterV', '500 40px InterV',
 ];
 
 let ready = null;
@@ -36,11 +38,13 @@ function boot() {
 // ------------------------------------------------------------ frame core ---
 const N_PIX = W * H;
 const acc = new Uint16Array(N_PIX * 3);
+// Per-film finishing: vignette depth and luma grain (base + midtone boost).
+const FINISH = { vignette: 0.09, grainBase: 1.1, grainMid: 1.6, ...(film.finish || {}) };
 const vignette = new Float32Array(N_PIX);
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const dx = (x - W / 2) / (W / 2), dy = (y - H / 2) / (H / 2);
   const d = Math.sqrt(dx * dx * 0.8 + dy * dy * 0.9);
-  vignette[y * W + x] = 1 - 0.09 * Math.pow(clamp(d - 0.35, 0, 1) / 0.65, 2.2);
+  vignette[y * W + x] = 1 - FINISH.vignette * Math.pow(clamp(d - 0.35, 0, 1) / 0.65, 2.2);
 }
 // Pre-baked film grain tile (approximately gaussian, deterministic).
 const GT = 1024;
@@ -52,14 +56,15 @@ const grain = new Float32Array(GT * GT);
 }
 
 const SHUTTER = 0.5; // 180°
+const DRAFT = new URLSearchParams(location.search).has('fast');
 
 function accumulate(frame, fps) {
   const t = frame / fps;
-  const n = blurSamples(t);
+  const n = DRAFT ? 1 : blurSamples(t);
   acc.fill(0);
   for (let k = 0; k < n; k++) {
     const ts = n === 1 ? t : t + ((k + 0.5) / n - 0.5) * (SHUTTER / fps);
-    compose(ctx, Math.max(0, ts), frame);
+    compose(ctx, Math.max(0, ts), frame, k, n);
     const d = ctx.getImageData(0, 0, W, H).data;
     for (let p = 0, q = 0; p < d.length; p += 4, q += 3) {
       acc[q] += d[p];
@@ -91,7 +96,7 @@ function toYUV(n, frame) {
       const r = acc[q] * v, g = acc[q + 1] * v, b = acc[q + 2] * v;
       const Y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
       const mid = 1 - Math.abs(Y / 127.5 - 1);
-      let yv = 16 + Y * 0.858824 + grain[gRow + ((x + ox) & (GT - 1))] * (1.1 + 1.6 * mid);
+      let yv = 16 + Y * 0.858824 + grain[gRow + ((x + ox) & (GT - 1))] * (FINISH.grainBase + FINISH.grainMid * mid);
       yv = yv < 16 ? 16 : yv > 235 ? 235 : yv;
       yuv[i] = yv + 0.5;
       const c = cRow + (x >> 1);

@@ -5,6 +5,7 @@
 //   node scripts/render.mjs --from 4 --to 12        partial render (seconds)
 //   node scripts/render.mjs --stills 1,2.5,4.2      PNG stills into out/stills
 //   node scripts/render.mjs --audio-only            just the soundtrack -> out/audio.wav
+//   node scripts/render.mjs --fast                  draft: no motion-blur accumulation
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -27,7 +28,9 @@ const FILM = opt('film', 'reel');
 const FINAL = path.resolve(ROOT, opt('out', FILM === 'reel' ? 'renders/claude-motion-reel.mp4' : `renders/claude-${FILM}.mp4`));
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
-const LAUNCH = { args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--ignore-gpu-blocklist', '--disable-background-timer-throttling', '--disable-renderer-backgrounding'] };
+const LAUNCH = { args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--ignore-gpu-blocklist', '--disable-background-timer-throttling', '--disable-renderer-backgrounding',
+  // keep every 2D canvas in software: GPU-backed (SwiftShader) canvases can silently lose their contents under memory pressure
+  '--disable-accelerated-2d-canvas'] };
 
 function run(cmd, argv, { quiet = false } = {}) {
   return new Promise((res, rej) => {
@@ -44,7 +47,7 @@ async function openPage(srv, tag) {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   page.on('console', (m) => console.log(`[${tag}] ${m.text()}`));
   page.on('pageerror', (e) => console.error(`[${tag}] PAGE ERROR`, e));
-  await page.goto(`http://127.0.0.1:${srv.port}/src/index.html?film=${FILM}`);
+  await page.goto(`http://127.0.0.1:${srv.port}/src/index.html?film=${FILM}${opt('fast') ? '&fast' : ''}`);
   await page.waitForFunction(() => window.REEL);
   return { browser, page };
 }
